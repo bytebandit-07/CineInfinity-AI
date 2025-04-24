@@ -1,3 +1,24 @@
+# === OS Specific ===
+.DS_Store
+Thumbs.db
+
+# === Python & PyCharm ===
+# Virtual environments
+.venv/
 venv/
+
+# IDE specific
+.idea/
+.vscode/
+
+# Bytecode and cache
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+
+# Logs and environments
+*.log
+*.env
+
+# Jupyter Notebooks
+.ipynb_checkpoints/

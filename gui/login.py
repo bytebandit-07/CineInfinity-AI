@@ -68,10 +68,17 @@ under_frame4=ctk.CTkFrame(login_frame, width=286, height=2, fg_color="#fda600").
 # Adding under frames
 under_frame3=ctk.CTkFrame(login_frame,width=25,height=2,fg_color="#fda600").place(x=230,y=290)
 
-# Create the login button
+# Bounce button animation
+def bounce_button():
+    original_y = 265
+    for offset in [0, -5, -10, -5, 0]:
+        Login_button.place(x=210, y=original_y + offset)
+        root.update()
+        root.after(30)
+
+#Login button
 Login_button = ctk.CTkButton(
-    master=login_frame, text="Login", command=on_button_click, width=130, height=40,
-    fg_color="#fda600", hover_color="#0096FF", corner_radius=20, font=("Helvetica", 14)
+    master=login_frame, text="LOGIN",fg_color="#fda600",hover_color='#0096ff', command=lambda: [bounce_button(), on_button_click()]
 )
 Login_button.place(x=210, y=265)
 #Adding OR label

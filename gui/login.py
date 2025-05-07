@@ -20,9 +20,18 @@ root.configure(bg="#262626")  # Set background color
 
 
 
-# Adding welcome text
-welcome_label = ctk.CTkLabel(root, text="Film Flow ▶️", font=("anton",50,"bold"),text_color="#fda600")
+# Welcome text
+welcome_text = "Film Flow ▶️"
+welcome_label = ctk.CTkLabel(root, text="", font=("anton",50,"bold"),text_color="#fda600")
 welcome_label.place(x=50,y=30)
+
+#Welcome animation
+def type_welcome(index=0):
+    if index < len(welcome_text):
+        welcome_label.configure(text=welcome_text[:index+1])
+        root.after(100, lambda: type_welcome(index+1))
+
+type_welcome()  # Start the typing animation
 
 #adding frame as underline
 under_frame1=ctk.CTkFrame(root, width=280, height=2, fg_color="#fda600").place(x=50,y=80)
@@ -65,8 +74,6 @@ password_text.place(x=230, y=270)
 under_frame3=ctk.CTkFrame(login_frame, width=284, height=2, fg_color="#fda600").place(x=157,y=123)
 under_frame4=ctk.CTkFrame(login_frame, width=286, height=2, fg_color="#fda600").place(x=155,y=208)
 
-# Adding under frames
-under_frame3=ctk.CTkFrame(login_frame,width=25,height=2,fg_color="#fda600").place(x=230,y=290)
 
 # Bounce button animation
 def bounce_button():

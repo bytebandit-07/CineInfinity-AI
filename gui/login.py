@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 
 
+
 # Functionality of login button
 def on_button_click():
     print("Button clicked!")  # Placeholder action
@@ -93,7 +94,7 @@ OR_label = tk.Label(login_frame, text="----------OR----------", font=("playfair"
 OR_label.place(x=255,y=510)
 
 # Add a label for the sign-up option
-Signup_label = tk.Label(login_frame, text="Don't have an account? ", bg="#222222", fg="white", font=("playfair", 23))
+Signup_label = tk.Label(login_frame, text="Don't have an account? ", bg="#222222", fg="white", font=("playfair", 23) )
 Signup_label.place(x=85, y=620)
 
 # Add the sign-up button

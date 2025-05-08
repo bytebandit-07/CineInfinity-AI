@@ -1,6 +1,5 @@
 import customtkinter as ctk 
 from tkinter import messagebox  # Import messagebox for pop-ups
-from PIL import Image 
 
 # Initialize the application window
 ctk.set_appearance_mode("dark")  
@@ -39,7 +38,7 @@ def sign_in():
         messagebox.showerror("Error", "Invalid Username or Password")
 
 # Sign-in Button (Linked to sign_in function)
-btn_signin = ctk.CTkButton(frame, text="Sign In", command=sign_in, width=300,fg_color="#fda600")
+btn_signin = ctk.CTkButton(frame, text="Sign In", command=sign_in, width=300,fg_color="#E50914")
 btn_signin.pack(pady=20)
 
 # Handle window close event

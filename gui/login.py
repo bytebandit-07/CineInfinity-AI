@@ -23,7 +23,7 @@ root.configure(bg="#262626")  # Set background color
 
 # Welcome text
 welcome_text = "Film Flow ▶️"
-welcome_label = ctk.CTkLabel(root, text="", font=("anton",50,"bold"),text_color="#fda600")
+welcome_label = ctk.CTkLabel(root, text="", font=("anton",50,"bold"),text_color="#E50914")
 welcome_label.place(x=50,y=30)
 
 #Welcome animation
@@ -35,14 +35,14 @@ def type_welcome(index=0):
 type_welcome()  # Start the typing animation
 
 #adding frame as underline
-under_frame1=ctk.CTkFrame(root, width=280, height=2, fg_color="#fda600").place(x=50,y=80)
-under_frame2=ctk.CTkFrame(root, width=280, height=2, fg_color="#fda600").place(x=50,y=90)
+under_frame1=ctk.CTkFrame(root, width=280, height=2, fg_color="#E50914").place(x=50,y=80)
+under_frame2=ctk.CTkFrame(root, width=280, height=2, fg_color="#E50914").place(x=50,y=90)
 
 # Outer frame (Border effect)
 outer_frame = ctk.CTkFrame(root, 
                            width=550, height=570,  # Set width & height in constructor
                            corner_radius=10, 
-                           fg_color="#fda600")  # Border color
+                           fg_color="#E50914")  # Border color
 outer_frame.place(x=690, y=75)  # Place without width/height
 
 
@@ -58,10 +58,10 @@ login_label = ctk.CTkLabel(login_frame, text="USER LOGIN", font=("anton",28,"bol
 login_label.place(x=186,y=25)
 
 # Adding labels for username and password fields
-usr_label = tk.Label(login_frame, text="Username", font=("playfair", 23, 'bold'), bg="#222222", fg="#fda600")
+usr_label = tk.Label(login_frame, text="Username", font=("playfair", 23, 'bold'), bg="#222222", fg="#E50914")
 usr_label.place(x=62, y=150)
 
-pass_label = tk.Label(login_frame, text="Password", font=("playfair", 23, 'bold'), bg="#222222", fg="#fda600")
+pass_label = tk.Label(login_frame, text="Password", font=("playfair", 23, 'bold'), bg="#222222", fg="#E50914")
 pass_label.place(x=67, y=270)
 
 # Adding input fields for username and password
@@ -72,8 +72,8 @@ password_text = tk.Entry(login_frame, width=25, fg='white', border=0, bg="#22222
 password_text.place(x=230, y=270)
 
 #adding frame as underline
-under_frame3=ctk.CTkFrame(login_frame, width=284, height=2, fg_color="#fda600").place(x=157,y=123)
-under_frame4=ctk.CTkFrame(login_frame, width=286, height=2, fg_color="#fda600").place(x=155,y=208)
+under_frame3=ctk.CTkFrame(login_frame, width=284, height=2, fg_color="#E50914").place(x=157,y=123)
+under_frame4=ctk.CTkFrame(login_frame, width=286, height=2, fg_color="#E50914").place(x=155,y=208)
 
 
 # Bounce button animation
@@ -86,7 +86,7 @@ def bounce_button():
 
 #Login button
 Login_button = ctk.CTkButton(
-    master=login_frame, text="LOGIN",fg_color="#fda600",hover_color='#0096ff', command=lambda: [bounce_button(), on_button_click()]
+    master=login_frame, text="LOGIN",fg_color="#E50914", command=lambda: [bounce_button(), on_button_click()]
 )
 Login_button.place(x=210, y=265)
 #Adding OR label

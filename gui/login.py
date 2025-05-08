@@ -116,7 +116,7 @@ def toggle_password():
 
 
 toggle_password_button = ctk.CTkButton(
-    master=login_frame, text="👁️",font=('',18), command=toggle_password, width=50, height=40, fg_color="#222222"
+    master=login_frame, text="👁️",font=('',18), command=toggle_password,hover_color="#222222", width=50, height=40, fg_color="#222222"
 )
 toggle_password_button.place(x=450, y=175)
 

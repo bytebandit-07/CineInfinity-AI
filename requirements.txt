@@ -2,4 +2,5 @@ flask
 pandas
 scikit-learn
 tk
-mysql-connector-python
+mysql-connector-python~=9.3.0
+customtkinter~=5.2.2

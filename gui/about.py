@@ -1,12 +1,42 @@
 import customtkinter as ctk
 import random
 from itertools import cycle
+from PIL import Image
+from PIL.ImageOps import expand
 
 root = ctk.CTk()
 ctk.set_appearance_mode('dark')
 root.geometry('1250x600')
 root.title('about us')
 root.resizable(False, False)
+
+
+# === Container for developer frames ===
+container = ctk.CTkFrame(root, fg_color="transparent")
+container.grid(row=1, column=0, pady=90)
+
+# === Developer frames inside container ===
+frame1 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corner_radius=50)
+frame1.grid(row=0, column=0, padx=20,pady=100)
+frame1.pack_propagate(False)
+
+frame2 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corner_radius=50)
+frame2.grid(row=0, column=1, padx=20)
+frame2.pack_propagate(False)
+
+frame3 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corner_radius=50)
+frame3.grid(row=0, column=2, padx=20)
+frame3.pack_propagate(False)
+
+frame4 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corner_radius=50)
+frame4.grid(row=0, column=3, padx=20)
+frame4.pack_propagate(False)
+# === Image in frame1 ===
+image4 = ctk.CTkImage(Image.open(r'E:\coding image\Ashir.jpg'), size=(150, 150))
+image4_label = ctk.CTkLabel(frame4, image=image4, text="", corner_radius=100)
+image4_label.pack(pady=30)
+
+
 
 # Create the label
 frame_label = ctk.CTkLabel(root, text="DEVELOPERS", text_color='white', font=('Terminal', 35, 'bold'))
@@ -17,70 +47,33 @@ glitch_colors = ['#ff00ff', '#00ffff', '#ffff00', '#ff0000', '#00ff00', '#0000ff
 color_cycle = cycle(glitch_colors)
 
 # Shaking animation parameters
-SHAKE_INTENSITY = 15  # Maximum shake distance in pixels
-SHAKE_STEPS = 5  # Number of shake movements per glitch
-
+SHAKE_INTENSITY = 15
+SHAKE_STEPS = 5
 
 def shake_label():
-    """Perform the shaking animation"""
     for i in range(SHAKE_STEPS):
-        # Calculate progressive shake (stronger at first, then weaker)
         intensity = SHAKE_INTENSITY * (SHAKE_STEPS - i) / SHAKE_STEPS
-
-        # Random offset that decreases over time
         x_offset = 515 + random.randint(-int(intensity), int(intensity))
         y_offset = 100 + random.randint(-int(intensity / 2), int(intensity / 2))
-
-        # Schedule each shake step with increasing delay for damping effect
         root.after(i * 30, lambda x=x_offset, y=y_offset: frame_label.place(x=x, y=y))
-
-    # Final reset to original position
     root.after(SHAKE_STEPS * 30, lambda: frame_label.place(x=515, y=100))
 
-
 def glitch_animation():
-    # Randomly change some characters
     original_text = "DEVELOPERS"
     glitched_text = list(original_text)
-
-    # Change 1-3 random characters to symbols
     for _ in range(random.randint(1, 3)):
         idx = random.randint(0, len(glitched_text) - 1)
         glitched_text[idx] = random.choice(['@', '#', '$', '%', '&', '*', '?'])
-
-    # Join the text back together
     glitched_text = ''.join(glitched_text)
-
-    # Apply changes
     frame_label.configure(text=glitched_text, text_color='#0ffbf9')
-
-    # Start shaking animation
     shake_label()
-
-    # Schedule the reset
-    delay = random.randint(150, 400)  # Glitch duration
-    root.after(delay, reset_glitch)
-
+    root.after(random.randint(150, 400), reset_glitch)
 
 def reset_glitch():
-    # Reset to original state
     frame_label.configure(text="DEVELOPERS", text_color='white')
+    root.after(random.randint(800, 2000), glitch_animation)
 
-    # Schedule next glitch
-    delay = random.randint(800, 2000)  # Wait before next glitch
-    root.after(delay, glitch_animation)
-
-
-# Initial placement
-frame_label.place(x=515, y=100)
-
-# Start animation after 1 second
 root.after(1000, glitch_animation)
 
-# Background frames
-frame1 = ctk.CTkFrame(root, fg_color='#333333', width=250, height=320, corner_radius=50).place(x=50, y=250)
-frame2 = ctk.CTkFrame(root, fg_color='#333333', width=250, height=320, corner_radius=50).place(x=350, y=250)
-frame3 = ctk.CTkFrame(root, fg_color='#333333', width=250, height=320, corner_radius=50).place(x=650, y=250)
-frame4 = ctk.CTkFrame(root, fg_color='#333333', width=250, height=320, corner_radius=50).place(x=950, y=250)
 
 root.mainloop()

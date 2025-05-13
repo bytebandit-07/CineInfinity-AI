@@ -22,3 +22,5 @@ __pycache__/
 
 # Jupyter Notebooks
 .ipynb_checkpoints/
+
+data/movies.csv

@@ -26,3 +26,6 @@ __pycache__/
 data/movies.csv
 database/
 
+datasets/movie.csv
+datasets/movies.csv
+

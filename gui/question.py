@@ -80,7 +80,13 @@ root = ctk.CTk()
 root._set_appearance_mode("dark")
 root.title("What do you like?")
 root.geometry("600x700")
-root.resizable(False, False)
+root.protocol("WM_DELETE_WINDOW", lambda: None)
+try:
+    root.attributes('-toolwindow', 1)
+    root.resizable(False, False)
+    root.attributes('-topmost', 1)
+except:
+    pass
 heading = ctk.CTkLabel(root, text="Tell us your preferences 🧐", text_color="white", font=('joyous', 32, 'bold'))
 heading.grid(row=0, column=0, padx=88, pady=14, sticky="W")
 

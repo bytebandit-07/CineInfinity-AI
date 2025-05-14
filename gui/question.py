@@ -106,19 +106,19 @@ select4 = ctk.CTkCheckBox(root, text="Comedy 🎭", font=('Book Antiqua Bold', 2
                           command=lambda: on_checkbox_toggle(select4))
 select4.grid(row=4, column=0, padx=20, pady=12, sticky="w")
 
-select5 = ctk.CTkCheckBox(root, text="Adventure 🗺️", font=('Book Antiqua Bold', 22, 'bold'),
+select5 = ctk.CTkCheckBox(root, text="Adventure 🗺️", font=('Bahnschrift Light', 22, 'bold'),
                           command=lambda: on_checkbox_toggle(select5))
 select5.grid(row=5, column=0, padx=20, pady=12, sticky="w")
 
-select6 = ctk.CTkCheckBox(root, text="Animation 🎨", font=('Book Antiqua Bold', 22, 'bold'),
+select6 = ctk.CTkCheckBox(root, text="Animation 🎨", font=('Agency FB Bold', 25, 'bold'),
                           command=lambda: on_checkbox_toggle(select6))
 select6.grid(row=6, column=0, padx=20, pady=12, sticky="w")
 
-select7 = ctk.CTkCheckBox(root, text="Children 🧒", font=('Book Antiqua Bold', 22, 'bold'),
+select7 = ctk.CTkCheckBox(root, text="Children 🧒", font=('Californian FB Bold', 22, 'bold'),
                           command=lambda: on_checkbox_toggle(select7))
 select7.grid(row=7, column=0, padx=20, pady=12, sticky="w")
 
-select8 = ctk.CTkCheckBox(root, text="Crime 🕵️", font=('Book Antiqua Bold', 22, 'bold'),
+select8 = ctk.CTkCheckBox(root, text="Crime 🕵️", font=('Bahnschrift Light', 22, 'bold'),
                           command=lambda: on_checkbox_toggle(select8))
 select8.grid(row=8, column=0, padx=20, pady=12, sticky="w")
 
@@ -126,23 +126,23 @@ select9 = ctk.CTkCheckBox(root, text="Documentary 📚", font=('Book Antiqua Bol
                           command=lambda: on_checkbox_toggle(select9))
 select9.grid(row=9, column=0, padx=20, pady=12, sticky="w")
 
-select10 = ctk.CTkCheckBox(root, text="Drama 🎬", font=('Book Antiqua Bold', 22, 'bold'),
+select10 = ctk.CTkCheckBox(root, text="Drama 🎬", font=('Baskerville Old Face', 22, 'bold'),
                            command=lambda: on_checkbox_toggle(select10))
 select10.grid(row=10, column=0, padx=20, pady=12, sticky="w")
 
-select11 = ctk.CTkCheckBox(root, text="Fantasy 🧚", font=('Book Antiqua Bold', 22, 'bold'),
+select11 = ctk.CTkCheckBox(root, text="Fantasy 🧚", font=('Comic Sans MS', 22, 'bold'),
                            command=lambda: on_checkbox_toggle(select11))
 select11.grid(row=1, column=0, padx=350, pady=12, sticky="W")
 
-select12 = ctk.CTkCheckBox(root, text="Film-Noir 🌑", font=('Book Antiqua Bold', 22, 'bold'),
+select12 = ctk.CTkCheckBox(root, text="Film-Noir 🌑", font=('Castellar', 22, 'bold'),
                            command=lambda: on_checkbox_toggle(select12))
 select12.grid(row=2, column=0, padx=350, pady=12, sticky="W")
 
-select13 = ctk.CTkCheckBox(root, text="IMAX 🎥", font=('Book Antiqua Bold', 22, 'bold'),
+select13 = ctk.CTkCheckBox(root, text="IMAX 🎥", font=('Cambria', 22, 'bold'),
                            command=lambda: on_checkbox_toggle(select13))
 select13.grid(row=3, column=0, padx=350, pady=12, sticky="W")
 
-select14 = ctk.CTkCheckBox(root, text="Musical 🎵", font=('Book Antiqua Bold', 22, 'bold'),
+select14 = ctk.CTkCheckBox(root, text="Musical 🎵", font=('Bell MT', 22, 'bold'),
                            command=lambda: on_checkbox_toggle(select14))
 select14.grid(row=4, column=0, padx=350, pady=12, sticky="W")
 

@@ -166,4 +166,7 @@ select19 = ctk.CTkCheckBox(root, text="Western 🤠", font=('Book Antiqua Bold',
                            command=lambda: on_checkbox_toggle(select19))
 select19.grid(row=9, column=0, padx=350, pady=12, sticky="W")
 
+submit_button=ctk.CTkButton(root, text ='SUBMIT',font=('Ink Free',15,'bold'),corner_radius=50,fg_color='red',hover_color='red')
+submit_button.grid(row=12,column=0,padx=220,pady=0,sticky="W")
+
 root.mainloop()

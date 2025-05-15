@@ -37,6 +37,14 @@ frame4 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corn
 frame4.grid(row=0, column=3, padx=20)
 frame4.pack_propagate(False)
 
+image1 = ctk.CTkImage(Image.open(r'E:\coding image\Omi.jpg'), size=(250, 250))
+image1_label = ctk.CTkLabel(frame1, image=image1, text="", corner_radius=100)
+image1_label.pack(pady=30)
+
+link1 = ctk.CTkLabel(frame1, text="M Umar Nasir", text_color="white", font=('Arial', 18, 'bold'), cursor="hand2")
+link1.pack(pady=(10, 0))
+link1.bind("<Button-1>", lambda e: open_link("https://github.com/omidrogado"))
+
 image2 = ctk.CTkImage(Image.open(r'E:\coding image\Talha.jpg'), size=(250, 250))
 image2_label = ctk.CTkLabel(frame2, image=image2, text="", corner_radius=100)
 image2_label.pack(pady=30)

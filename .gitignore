@@ -30,5 +30,5 @@ datasets/movie.csv
 datasets/movies.csv
 
 # dataset
-dataset.movie.csv
-dataset.rating.csv
+movie.csv
+rating.csv

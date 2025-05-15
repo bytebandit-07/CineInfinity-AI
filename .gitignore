@@ -29,3 +29,6 @@ database/
 datasets/movie.csv
 datasets/movies.csv
 
+# dataset
+dataset.movie.csv
+dataset.rating.csv

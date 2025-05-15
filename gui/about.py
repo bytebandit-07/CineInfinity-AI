@@ -1,8 +1,13 @@
 import customtkinter as ctk
 import random
+import webbrowser
 from itertools import cycle
 from PIL import Image
 from PIL.ImageOps import expand
+
+
+def open_link(url):
+    webbrowser.open_new(url)
 
 root = ctk.CTk()
 ctk.set_appearance_mode('dark')
@@ -31,12 +36,31 @@ frame3.pack_propagate(False)
 frame4 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corner_radius=50)
 frame4.grid(row=0, column=3, padx=20)
 frame4.pack_propagate(False)
-# === Image in frame1 ===
-image4 = ctk.CTkImage(Image.open(r'E:\coding image\Ashir.jpg'), size=(150, 150))
+
+image2 = ctk.CTkImage(Image.open(r'E:\coding image\Talha.jpg'), size=(250, 250))
+image2_label = ctk.CTkLabel(frame2, image=image2, text="", corner_radius=100)
+image2_label.pack(pady=30)
+
+
+link2 = ctk.CTkLabel(frame2, text="M talha Aamir", text_color="white", font=('Arial', 18, 'bold'), cursor="hand2")
+link2.pack(pady=(10, 0))
+link2.bind("<Button-1>", lambda e: open_link("https://github.com/NotTonyStarkk-99"))
+
+image3 = ctk.CTkImage(Image.open(r'E:\coding image\Talal.jpg'), size=(250, 250))
+image3_label = ctk.CTkLabel(frame3, image=image3, text="", corner_radius=100)
+image3_label.pack(pady=30)
+
+link3 = ctk.CTkLabel(frame3, text="M Talal", text_color="white", font=('Arial', 18, 'bold'), cursor="hand2")
+link3.pack(pady=(10, 0))
+link3.bind("<Button-1>", lambda e: open_link("https://github.com/bytebandit-07"))
+
+image4 = ctk.CTkImage(Image.open(r'E:\coding image\Ashir.jpg'), size=(250, 250))
 image4_label = ctk.CTkLabel(frame4, image=image4, text="", corner_radius=100)
 image4_label.pack(pady=30)
 
-
+link4 = ctk.CTkLabel(frame4, text="Ashir Bin Hamid", text_color="white", font=('Arial', 18, 'bold'), cursor="hand2")
+link4.pack(pady=(10, 0))
+link4.bind("<Button-1>", lambda e: open_link("https://github.com/Lordshadow-afk"))
 
 # Create the label
 frame_label = ctk.CTkLabel(root, text="DEVELOPERS", text_color='white', font=('Terminal', 35, 'bold'))

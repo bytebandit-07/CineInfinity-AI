@@ -37,7 +37,7 @@ frame4 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corn
 frame4.grid(row=0, column=3, padx=20)
 frame4.pack_propagate(False)
 
-image1 = ctk.CTkImage(Image.open(r'E:\coding image\Omi.jpg'), size=(250, 250))
+image1 = ctk.CTkImage(Image.open(r'../Assets/Omi.jpg'), size=(250, 250))
 image1_label = ctk.CTkLabel(frame1, image=image1, text="", corner_radius=100)
 image1_label.pack(pady=30)
 
@@ -45,7 +45,7 @@ link1 = ctk.CTkLabel(frame1, text="M Umar Nasir", text_color="white", font=('Ari
 link1.pack(pady=(10, 0))
 link1.bind("<Button-1>", lambda e: open_link("https://github.com/omidrogado"))
 
-image2 = ctk.CTkImage(Image.open(r'E:\coding image\Talha.jpg'), size=(250, 250))
+image2 = ctk.CTkImage(Image.open(r'../Assets/Talha.jpg'), size=(250, 250))
 image2_label = ctk.CTkLabel(frame2, image=image2, text="", corner_radius=100)
 image2_label.pack(pady=30)
 
@@ -54,7 +54,7 @@ link2 = ctk.CTkLabel(frame2, text="M talha Aamir", text_color="white", font=('Ar
 link2.pack(pady=(10, 0))
 link2.bind("<Button-1>", lambda e: open_link("https://github.com/NotTonyStarkk-99"))
 
-image3 = ctk.CTkImage(Image.open(r'E:\coding image\Talal.jpg'), size=(250, 250))
+image3 = ctk.CTkImage(Image.open(r'../Assets/Talal.jpg'), size=(250, 250))
 image3_label = ctk.CTkLabel(frame3, image=image3, text="", corner_radius=100)
 image3_label.pack(pady=30)
 
@@ -62,7 +62,7 @@ link3 = ctk.CTkLabel(frame3, text="M Talal", text_color="white", font=('Arial', 
 link3.pack(pady=(10, 0))
 link3.bind("<Button-1>", lambda e: open_link("https://github.com/bytebandit-07"))
 
-image4 = ctk.CTkImage(Image.open(r'E:\coding image\Ashir.jpg'), size=(250, 250))
+image4 = ctk.CTkImage(Image.open(r'../Assets/Ashir.jpg'), size=(250, 250))
 image4_label = ctk.CTkLabel(frame4, image=image4, text="", corner_radius=100)
 image4_label.pack(pady=30)
 

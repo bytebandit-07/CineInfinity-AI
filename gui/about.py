@@ -22,7 +22,7 @@ container.grid(row=1, column=0, pady=90)
 
 # === Developer frames inside container ===
 frame1 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corner_radius=50)
-frame1.grid(row=0, column=0, padx=20,pady=100)
+frame1.grid(row=0, column=0, padx=50,pady=0)
 frame1.pack_propagate(False)
 
 frame2 = ctk.CTkFrame(container, fg_color='#333333', width=250, height=370, corner_radius=50)
@@ -71,41 +71,10 @@ link4.pack(pady=(10, 0))
 link4.bind("<Button-1>", lambda e: open_link("https://github.com/Lordshadow-afk"))
 
 # Create the label
-frame_label = ctk.CTkLabel(root, text="DEVELOPERS", text_color='white', font=('Terminal', 35, 'bold'))
-frame_label.place(x=515, y=100)
+frame_label = ctk.CTkLabel(root, text="DEVELOPERS", text_color='white', font=('Terminal', 45, 'bold'))
+frame_label.grid(row=0,column=0,padx=195, pady=40)
 
-# Glitch colors
-glitch_colors = ['#ff00ff', '#00ffff', '#ffff00', '#ff0000', '#00ff00', '#0000ff']
-color_cycle = cycle(glitch_colors)
 
-# Shaking animation parameters
-SHAKE_INTENSITY = 15
-SHAKE_STEPS = 5
-
-def shake_label():
-    for i in range(SHAKE_STEPS):
-        intensity = SHAKE_INTENSITY * (SHAKE_STEPS - i) / SHAKE_STEPS
-        x_offset = 515 + random.randint(-int(intensity), int(intensity))
-        y_offset = 100 + random.randint(-int(intensity / 2), int(intensity / 2))
-        root.after(i * 30, lambda x=x_offset, y=y_offset: frame_label.place(x=x, y=y))
-    root.after(SHAKE_STEPS * 30, lambda: frame_label.place(x=515, y=100))
-
-def glitch_animation():
-    original_text = "DEVELOPERS"
-    glitched_text = list(original_text)
-    for _ in range(random.randint(1, 3)):
-        idx = random.randint(0, len(glitched_text) - 1)
-        glitched_text[idx] = random.choice(['@', '#', '$', '%', '&', '*', '?'])
-    glitched_text = ''.join(glitched_text)
-    frame_label.configure(text=glitched_text, text_color='#0ffbf9')
-    shake_label()
-    root.after(random.randint(150, 400), reset_glitch)
-
-def reset_glitch():
-    frame_label.configure(text="DEVELOPERS", text_color='white')
-    root.after(random.randint(800, 2000), glitch_animation)
-
-root.after(1000, glitch_animation)
 
 
 root.mainloop()

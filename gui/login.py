@@ -37,10 +37,12 @@ main_frame = ctk.CTkFrame(root, fg_color="#262626")
 main_frame.pack(pady=20)
 
 outer_frame = ctk.CTkFrame(main_frame, width=550, height=570, corner_radius=10, fg_color="#E50914")
-outer_frame.pack()
+outer_frame.pack(side="right")
+outer_frame.pack_propagate(False)
 
 login_frame = ctk.CTkFrame(outer_frame, width=540, height=560, corner_radius=30, fg_color="#222222")
 login_frame.pack(padx=5, pady=5)
+login_frame.pack_propagate(False)
 
 login_label = ctk.CTkLabel(login_frame, text="USER LOGIN", font=("anton", 28, "bold"), text_color="white")
 login_label.pack(pady=(20, 10))
@@ -99,11 +101,9 @@ Signup_button = tk.Button(signup_frame, width=6, text="Sign up", font=("playfair
                           cursor="hand2", fg="#57a1f8")
 Signup_button.pack(side="left")
 
-# About us at bottom right
-about_container = tk.Frame(root, bg="#262626")
-about_container.pack(side="bottom", fill="x", pady=10)
 
-about_button = tk.Button(about_container, width=10, text=" About us ℹ️", font=("playfair", 13),
+
+about_button = tk.Button(login_frame, width=10, text=" About us ℹ️", font=("playfair", 13),
                          border=0, bg="#262626", cursor="hand2", fg="#57a1f8")
 about_button.pack(side="right", padx=20)
 

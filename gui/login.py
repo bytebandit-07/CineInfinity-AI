@@ -105,6 +105,12 @@ Signup_label.place(x=85, y=620)
 
 Signup_button = tk.Button(login_frame, width=6, text="Sign up", font=("playfair", 23), border=0, bg="#222222", cursor="hand2", fg="#57a1f8")
 Signup_button.place(x=410, y=612)
+def open_register():
+    import register
+    register.show_register_window(root)
+
+Signup_button.config(command=open_register)
+
 
 
 about_button = tk.Button(login_frame, width=10, text=" About us ℹ️", font=("playfair", 13), border=0, bg="#222222", cursor="hand2", fg="#57a1f8")

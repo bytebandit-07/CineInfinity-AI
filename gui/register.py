@@ -8,9 +8,10 @@ def show_register_window(parent):
         password = entry_password.get()
 
         if username == "admin" and password == "password":
-            messagebox.showinfo("Success", "Login Successful!")
+            messagebox.showerror("Error", "User already exists")
         else:
-            messagebox.showerror("Error", "Invalid Username or Password")
+            messagebox.showinfo("Success", "Welcome to the hood 😎")
+
 
     def on_closing():
         register_window.destroy()

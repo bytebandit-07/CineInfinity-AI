@@ -9,8 +9,11 @@ def show_register_window(parent):
 
         if username == "admin" and password == "password":
             messagebox.showerror("Error", "User already exists")
+            
         else:
             messagebox.showinfo("Success", "Welcome to the hood 😎")
+            register_window.destroy()
+            parent.deiconify()
 
 
     def on_closing():

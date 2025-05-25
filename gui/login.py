@@ -3,9 +3,20 @@ import customtkinter as ctk
 from about import show_about_window
 
 
+VALID_USERNAME = "admin"
+VALID_PASSWORD = "password123"
+
 # Functionality of login button
 def on_button_click():
-    print("Button clicked!")  # Placeholder action
+    username = login_text.get()
+    password = password_text.get()
+
+    if username == VALID_USERNAME and password == VALID_PASSWORD:
+        root.destroy()  
+        import main_window
+    else:
+        from tkinter import messagebox
+        messagebox.showerror("Login Failed", "Invalid username or password")
 
 # Function to handle window close event
 def on_closing():

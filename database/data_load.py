@@ -1,28 +1,14 @@
 import pandas as pd
-import mysql.connector
-from dotenv import load_dotenv
-import os
+from db_config import get_connection
 
-# Load environment variables from .env file
-load_dotenv()
-
-DB_HOST = os.getenv("DB_HOST")
-DB_USER = os.getenv("DB_USER")
-DB_PASSWORD = os.getenv("DB_PASSWORD")
-DB_NAME = os.getenv("DB_NAME")
-
-conn = mysql.connector.connect(
-    host=DB_HOST,
-    user=DB_USER,
-    password=DB_PASSWORD,
-    database=DB_NAME
-)
+# Get DB connection
+conn = get_connection()
 cursor = conn.cursor()
 
-# ✅ Load the CSV from your Downloads folder
-df = pd.read_csv(r"C:\Users\omina\Downloads\processed_movies.csv").dropna()
+# ✅ Load the CSV
+df = pd.read_csv(r"..\notebook\processed_movies.csv").dropna()
 
-# Insert each row into the movies table
+# Insert rows
 for _, row in df.iterrows():
     try:
         cursor.execute(

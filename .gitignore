@@ -32,3 +32,4 @@ database/.env
 # dataset
 movie.csv
 rating.csv
+db_config.py

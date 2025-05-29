@@ -1,8 +1,5 @@
-# db_manager.py
-
 import mysql.connector
 from db_config import get_connection
-from dotenv import load_dotenv
 import os
 
 conn = get_connection()

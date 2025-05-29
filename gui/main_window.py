@@ -45,6 +45,8 @@ root = ctk.CTk()
 ctk.set_appearance_mode("dark")
 root.geometry("900x600")
 root.title("Film Flow")
+root.iconbitmap("../Assets/labeel.ico")
+
 
 # --- Top Menu Frame ---
 menu_frame = ctk.CTkFrame(root, fg_color="#E50914", corner_radius=0)
@@ -55,6 +57,7 @@ menu_inner.pack(padx=10, pady=10, fill="x")
 
 title_label = ctk.CTkLabel(menu_inner, text="Film Flow", text_color="white", font=("morganite", 22, "bold"))
 title_label.pack(side="left", padx=(5, 20))
+
 
 search_bar = ctk.CTkEntry(menu_inner, placeholder_text="Search", placeholder_text_color="black",
                           width=500, height=30, fg_color="#f0f0f0", text_color="black",

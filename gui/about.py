@@ -14,10 +14,13 @@ def show_about_window(parent):
 
     about_window = ctk.CTkToplevel()
     about_window.title("about us")
+    about_window.iconbitmap("../Assets/labeel.ico")
     about_window.geometry('1250x600')
+
     about_window.resizable(False, False)
     ctk.set_appearance_mode('dark')
     about_window.protocol("WM_DELETE_WINDOW", on_closing)
+
 
     # === Developer content (USE YOUR EXISTING CODE BELOW THIS LINE) ===
     container = ctk.CTkFrame(about_window, fg_color="transparent")

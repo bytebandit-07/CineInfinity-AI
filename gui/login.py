@@ -2,16 +2,15 @@ import tkinter as tk
 import customtkinter as ctk
 from about import show_about_window
 from PIL import Image
+from database.db_manager import auth_user
 
-VALID_USERNAME = "admin"
-VALID_PASSWORD = "password123"
 
 # Functionality of login button
 def on_button_click():
     username = login_text.get()
     password = password_text.get()
 
-    if username == VALID_USERNAME and password == VALID_PASSWORD:
+    if auth_user(username, password):
         root.destroy()  
         import main_window
     else:

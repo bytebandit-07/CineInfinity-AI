@@ -34,13 +34,12 @@ root._set_appearance_mode("dark")
 root.title("Film Flow")
 root.geometry("1280x900")
 root.configure(bg="#262626")
-
+root.iconbitmap("../Assets/labeel.ico")
 
 
 welcome_text = "Film Flow ▶️"
 welcome_label = ctk.CTkLabel(root, text="", font=("anton", 50, "bold"), text_color="#E50914")
 welcome_label.place(x=50, y=30)
-
 
 # Welcome animation
 def type_welcome(index=0):

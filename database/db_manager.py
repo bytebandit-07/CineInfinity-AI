@@ -6,13 +6,27 @@ conn = get_connection()
 cursor = conn.cursor()
 
 # Add a new user
-def add_user(username, password):
+def register_user(username, password):
     try:
         cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
         conn.commit()
         print("✅ User added successfully.")
     except mysql.connector.Error as err:
         print(f"❌ Error adding user: {err}")
+
+def auth_user(username, password):
+    try:
+        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
+        result = cursor.fetchone()
+        if result:
+            print("✅ Authentication successful.")
+            return True
+        else:
+            print("❌ Authentication failed. Invalid username or password.")
+            return False
+    except mysql.connector.Error as err:
+        print(f"❌ Error during authentication: {err}")
+        return False
 
 # Log a search query for a user
 def log_search(user_id, query):
@@ -26,7 +40,7 @@ def log_search(user_id, query):
 # Retrieve search history for a user
 def get_history(user_id):
     try:
-        cursor.execute("SELECT search_query, search_time FROM search_history WHERE user_id = %s ORDER BY search_time DESC", (user_id,))
+        cursor.execute("SELECT search_query FROM search_history WHERE user_id = %s ORDER BY search_time DESC", (user_id,))
         return cursor.fetchall()
     except mysql.connector.Error as err:
         print(f"❌ Error retrieving history: {err}")

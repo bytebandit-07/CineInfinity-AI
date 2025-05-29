@@ -26,8 +26,10 @@ def show_register_window(parent):
     register_window = ctk.CTkToplevel()
     register_window.title("Sign in")
     register_window.geometry("490x590")
+    register_window.iconbitmap("../Assets/labeel.ico")
     register_window.resizable(False, False)
     register_window.protocol("WM_DELETE_WINDOW", on_closing)
+
 
     frame = ctk.CTkFrame(register_window, fg_color="#333333", corner_radius=15)
     frame.pack(pady=100, padx=50, fill="both", expand=False)

@@ -1,7 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 from about import show_about_window
-
+from PIL import Image
 
 VALID_USERNAME = "admin"
 VALID_PASSWORD = "password123"
@@ -40,6 +40,7 @@ root.configure(bg="#262626")
 welcome_text = "Film Flow ▶️"
 welcome_label = ctk.CTkLabel(root, text="", font=("anton", 50, "bold"), text_color="#E50914")
 welcome_label.place(x=50, y=30)
+
 
 # Welcome animation
 def type_welcome(index=0):

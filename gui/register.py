@@ -1,19 +1,22 @@
 import customtkinter as ctk
 from tkinter import messagebox
-
+from database.db_manager import register_user
 
 def show_register_window(parent):
     def sign_in():
         username = entry_username.get()
         password = entry_password.get()
 
-        if username == "admin" and password == "password":
+        result = register_user(username, password)
+
+        if result == "existed":
             messagebox.showerror("Error", "User already exists")
-            
-        else:
+        elif result is True:
             messagebox.showinfo("Success", "Welcome to the hood 😎")
             register_window.destroy()
             parent.deiconify()
+        else:
+            messagebox.showerror("Error", "Failed to register user")
 
 
     def on_closing():

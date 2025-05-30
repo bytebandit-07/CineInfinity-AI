@@ -33,3 +33,7 @@ database/.env
 movie.csv
 rating.csv
 db_config.py
+
+# gemini
+encrypted_api.key
+encryption.key

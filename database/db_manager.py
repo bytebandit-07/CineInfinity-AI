@@ -8,11 +8,20 @@ cursor = conn.cursor()
 # Add a new user
 def register_user(username, password):
     try:
+        # Check if user already exists
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        result = cursor.fetchone()
+        if result:
+            return "existed"
+
+        # Insert new user
         cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
         conn.commit()
-        print("✅ User added successfully.")
-    except mysql.connector.Error as err:
-        print(f"❌ Error adding user: {err}")
+        return True
+
+    except mysql.connector.Error:
+        return False
+
 
 def auth_user(username, password):
     try:

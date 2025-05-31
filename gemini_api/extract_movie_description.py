@@ -7,7 +7,7 @@ api_key = load_api_key()
 client = genai.Client(api_key=api_key)
 
 def get_movie_description(movie_title: str) -> str:
-    prompt = f"Give a one-line summary of the movie titled '{movie_title}'."
+    prompt = f"Give a one-line description of the movie titled '{movie_title}'."
 
     contents = [
         types.Content(

@@ -35,5 +35,5 @@ rating.csv
 db_config.py
 
 # gemini
-encrypted_api.key
-encryption.key
+encrypted_api_key.txt
+fernet.key

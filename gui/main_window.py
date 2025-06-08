@@ -4,65 +4,82 @@ from PIL import Image, ImageTk
 from ctypes import windll
 
 
-# Fix DPI scaling issues on Windows
-try:
-    windll.shcore.SetProcessDpiAwareness(1)
-except:
-    pass
-
-
 def search_movie():
     movie = entry.get()
     print(f"Searching for recommendations based on: {movie}")
     # Add search functionality here
 
 
-# Sample movie data
+# Enhanced movie data with more details
 movie_categories = {
     "Recommended for you": [
-        {"title": "Movie 1", "image": "placeholder.jpg"},
-        {"title": "Movie 2", "image": "placeholder.jpg"},
-        {"title": "Movie 3", "image": "placeholder.jpg"},
-        {"title": "Movie 4", "image": "placeholder.jpg"},
-        {"title": "Movie 5", "image": "placeholder.jpg"},
-        {"title": "Movie 6", "image": "placeholder.jpg"},
-        {"title": "Movie 7", "image": "placeholder.jpg"},
+        {"title": "The Shawshank Redemption", "image": "placeholder.jpg",
+         "rating": "9.3",
+         "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."},
+        {"title": "The Godfather", "image": "placeholder.jpg",
+         "rating": "9.2",
+         "description": "The aging patriarch of an organized crime dynasty transfers control to his reluctant son."},
+        {"title": "The Dark Knight", "image": "placeholder.jpg",
+         "rating": "9.0",
+         "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."},
+        {"title": "Pulp Fiction", "image": "placeholder.jpg",
+         "rating": "8.9",
+         "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption."},
+        {"title": "Fight Club", "image": "placeholder.jpg",
+         "rating": "8.8",
+         "description": "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."},
+        {"title": "Inception", "image": "placeholder.jpg",
+         "rating": "8.8",
+         "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."},
+        {"title": "The Matrix", "image": "placeholder.jpg",
+         "rating": "8.7",
+         "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."},
     ],
     "Trending Now": [
-        {"title": "Movie 1", "image": "placeholder.jpg"},
-        {"title": "Movie 2", "image": "placeholder.jpg"},
-        {"title": "Movie 3", "image": "placeholder.jpg"},
-        {"title": "Movie 4", "image": "placeholder.jpg"},
-        {"title": "Movie 5", "image": "placeholder.jpg"},
-        {"title": "Movie 6", "image": "placeholder.jpg"},
-        {"title": "Movie 7", "image": "placeholder.jpg"},
+        {"title": "Dune", "image": "placeholder.jpg",
+         "rating": "8.0",
+         "description": "Feature adaptation of Frank Herbert's science fiction novel about the son of a noble family entrusted with the protection of the most valuable asset in the galaxy."},
+        {"title": "No Time to Die", "image": "placeholder.jpg",
+         "rating": "7.3",
+         "description": "James Bond has left active service. His peace is short-lived when Felix Leiter, an old friend from the CIA, turns up asking for help."},
+        {"title": "Spider-Man: No Way Home", "image": "placeholder.jpg",
+         "rating": "8.3",
+         "description": "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear."},
+        {"title": "The Batman", "image": "placeholder.jpg",
+         "rating": "7.9",
+         "description": "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption."},
+        {"title": "Shang-Chi", "image": "placeholder.jpg",
+         "rating": "7.4",
+         "description": "Shang-Chi, the master of weaponry-based Kung Fu, is forced to confront his past after being drawn into the Ten Rings organization."},
+        {"title": "Eternals", "image": "placeholder.jpg",
+         "rating": "6.3",
+         "description": "The saga of the Eternals, a race of immortal beings who lived on Earth and shaped its history and civilizations."},
+        {"title": "Black Widow", "image": "placeholder.jpg",
+         "rating": "6.7",
+         "description": "Natasha Romanoff confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises."},
     ],
     "Comedy Movies": [
-        {"title": "Funny Movie 1", "image": "placeholder.jpg"},
-        {"title": "Funny Movie 2", "image": "placeholder.jpg"},
-        {"title": "Funny Movie 3", "image": "placeholder.jpg"},
-        {"title": "Funny Movie 4", "image": "placeholder.jpg"},
-        {"title": "Funny Movie 5", "image": "placeholder.jpg"},
-        {"title": "Movie 6", "image": "placeholder.jpg"},
-        {"title": "Movie 7", "image": "placeholder.jpg"},
-    ],
-    "Horror Movies": [
-        {"title": "Scary Movie 1", "image": "placeholder.jpg"},
-        {"title": "Scary Movie 2", "image": "placeholder.jpg"},
-        {"title": "Scary Movie 3", "image": "placeholder.jpg"},
-        {"title": "Scary Movie 4", "image": "placeholder.jpg"},
-        {"title": "Scary Movie 5", "image": "placeholder.jpg"},
-        {"title": "Movie 6", "image": "placeholder.jpg"},
-        {"title": "Movie 7", "image": "placeholder.jpg"},
-    ],
-    "Suspense Thrillers": [
-        {"title": "Thriller 1", "image": "placeholder.jpg"},
-        {"title": "Thriller 2", "image": "placeholder.jpg"},
-        {"title": "Thriller 3", "image": "placeholder.jpg"},
-        {"title": "Thriller 4", "image": "placeholder.jpg"},
-        {"title": "Thriller 5", "image": "placeholder.jpg"},
-        {"title": "Movie 6", "image": "placeholder.jpg"},
-        {"title": "Movie 7", "image": "placeholder.jpg"},
+        {"title": "The Hangover", "image": "placeholder.jpg",
+         "rating": "7.7",
+         "description": "Three buddies wake up from a bachelor party in Las Vegas, with no memory of the previous night and the bachelor missing. They make their way around the city in order to find their friend before his wedding."},
+        {"title": "Superbad", "image": "placeholder.jpg",
+         "rating": "7.6",
+         "description": "Two co-dependent high school seniors are forced to deal with separation anxiety after their plan to stage a booze-soaked party goes awry."},
+        {"title": "Bridesmaids", "image": "placeholder.jpg",
+         "rating": "6.8",
+         "description": "Competition between the maid of honor and a bridesmaid, over who is the bride's best friend, threatens to upend the life of an out-of-work pastry chef."},
+        {"title": "Step Brothers", "image": "placeholder.jpg",
+         "rating": "6.9",
+         "description": "Two aimless middle-aged losers still living at home are forced against their will to become roommates when their parents marry."},
+        {"title": "Anchorman", "image": "placeholder.jpg",
+         "rating": "7.2",
+         "description": "Ron Burgundy is San Diego's top-rated newsman in the male-dominated broadcasting of the 1970s, but that's all about to change when a new female employee arrives."},
+        {"title": "The 40-Year-Old Virgin", "image": "placeholder.jpg",
+         "rating": "7.1",
+         "description": "Goaded by his buddies, a nerdy guy who's never 'done the deed' only finds the pressure mounting when he meets a single mother."},
+        {"title": "Ted", "image": "placeholder.jpg",
+         "rating": "6.9",
+         "description": "John Bennett, a man whose childhood wish of bringing his teddy bear to life came true, now must decide between keeping the relationship with the bear or his girlfriend, Lori."},
     ]
 }
 
@@ -117,6 +134,77 @@ def _on_mousewheel(event):
 content_frame._parent_canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
 selected_movie_frame = None
+detail_window = None
+
+
+def show_movie_details(movie_data):
+    global detail_window
+
+    # Close previous detail window if it exists
+    if detail_window is not None:
+        detail_window.destroy()
+
+    # Create new detail window
+    detail_window = ctk.CTkToplevel(root)
+    detail_window.title(movie_data["title"])
+    detail_window.geometry("800x600")
+    detail_window.resizable(False, False)
+    detail_window.transient(root)  # Set as child of main window
+    detail_window.grab_set()  # Make modal
+
+    # Main container
+    main_container = ctk.CTkFrame(detail_window, fg_color="black")
+    main_container.pack(fill="both", expand=True, padx=20, pady=20)
+
+    # Movie poster (left side)
+    poster_frame = ctk.CTkFrame(main_container, width=300, height=450, fg_color="#222222")
+    poster_frame.pack_propagate(False)
+    poster_frame.pack(side="left", fill="y", padx=(0, 20))
+
+    try:
+        img = Image.open(movie_data["image"])
+        img = img.resize((300, 450), Image.LANCZOS)
+        photo = ImageTk.PhotoImage(img)
+    except:
+        img = Image.new("RGB", (300, 450), color="gray")
+        photo = ImageTk.PhotoImage(img)
+
+    poster_label = tk.Label(poster_frame, image=photo, bg="#222222")
+    poster_label.image = photo
+    poster_label.pack(expand=True, fill="both")
+
+    # Movie info (right side)
+    info_frame = ctk.CTkFrame(main_container, fg_color="black")
+    info_frame.pack(side="left", fill="both", expand=True)
+
+    # Title
+    title_label = ctk.CTkLabel(info_frame, text=movie_data["title"],
+                               text_color="white", font=("Arial", 28, "bold"),
+                               anchor="w", justify="left")
+    title_label.pack(fill="x", pady=(0, 10))
+
+    # Rating
+    rating_frame = ctk.CTkFrame(info_frame, fg_color="black")
+    rating_frame.pack(fill="x", pady=(0, 20))
+
+    rating_stars = ctk.CTkLabel(rating_frame, text="★" * int(float(movie_data["rating"])),
+                                text_color="#E50914", font=("Arial", 16))
+    rating_stars.pack(side="left")
+
+    rating_text = ctk.CTkLabel(rating_frame, text=f"{movie_data['rating']}/10",
+                               text_color="white", font=("Arial", 16))
+    rating_text.pack(side="left", padx=(10, 0))
+
+    # Description
+    desc_label = ctk.CTkLabel(info_frame, text=movie_data["description"],
+                              text_color="white", font=("Arial", 14),
+                              wraplength=400, justify="left", anchor="w")
+    desc_label.pack(fill="x", pady=(0, 30))
+
+    # Close button
+    close_button = ctk.CTkButton(info_frame, text="Close", fg_color="#333333",
+                                 hover_color="#444444", command=detail_window.destroy)
+    close_button.pack(side="bottom", pady=(20, 0))
 
 
 def on_movie_select(frame, movie_data):
@@ -129,6 +217,7 @@ def on_movie_select(frame, movie_data):
     selected_movie_frame = frame
 
     print(f"Selected movie: {movie_data['title']}")
+    show_movie_details(movie_data)
 
 
 # --- Populate Movie Sections ---

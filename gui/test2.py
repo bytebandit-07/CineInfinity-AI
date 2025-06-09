@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from database.db_manager import auth_user
+from customtkinter import CTkImage
 
 # Functionality
 def on_button_click():
@@ -66,6 +67,7 @@ root._set_appearance_mode("dark")
 root.title("Film Flow - Login")
 root.geometry("1200x750")
 root.configure(bg="#0A0A0A")
+root.iconbitmap("../Assets/labeel.ico")
 
 # Background - Film Strip Effect
 bg_frame = ctk.CTkFrame(root, fg_color="#0A0A0A")
@@ -75,14 +77,40 @@ bg_frame.pack(fill="both", expand=True)
 poster_frame = ctk.CTkFrame(bg_frame, fg_color="transparent", width=500)
 poster_frame.pack(side="left", fill="y", padx=20)
 
-# Sample movie posters (replace with actual images)
-posters = [
-    "../Assets/poster1.jpg",  # Replace with actual paths
+
+poster_paths = [
+    "../Assets/poster1.jpg",
     "../Assets/poster2.jpg",
-    "../Assets/poster3.jpg"
 ]
 
-# For demo purposes, we'll use colored placeholders
+
+
+
+for poster_path in poster_paths:
+    try:
+        img = Image.open(poster_path)
+
+
+        ctk_img = CTkImage(light_image=img, size=(300, 350))
+
+        # Create label with CTkImage
+        poster_label = ctk.CTkLabel(poster_frame,
+                                    image=ctk_img,
+                                    text="")
+        poster_label.image = ctk_img  # Prevent garbage collection
+        poster_label.pack(pady=15)
+
+    except Exception as e:
+        print(f"Error loading image {poster_path}: {e}")
+        placeholder = ctk.CTkFrame(poster_frame,
+                                   width=300,
+                                   height=450,
+                                   corner_radius=12,
+                                   fg_color="#1A1A1A")
+        placeholder.pack(pady=15)
+
+
+
 for i in range(3):
     poster = ctk.CTkFrame(poster_frame,
                          width=300,
@@ -118,7 +146,7 @@ app_logo = ctk.CTkLabel(logo_frame,
 app_logo.pack()
 
 tagline = ctk.CTkLabel(logo_frame,
-                      text="Your Personal Movie Curator",
+                      text="Your Personal Movie Recommender",
                       font=("Helvetica", 16),
                       text_color="#888888")
 tagline.pack(pady=(5, 0))

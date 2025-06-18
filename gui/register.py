@@ -1,23 +1,26 @@
 import customtkinter as ctk
 from tkinter import messagebox
 from database.db_manager import register_user
+from database.db_config import get_connection
 from question import show_genre_preferences
+
+conn = get_connection()
+cursor = conn.cursor()
 
 def show_register_window(parent):
     def sign_in():
         username = entry_username.get()
         password = entry_password.get()
 
-        result = register_user(username, password)
+        # Check if user already exists
+        cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
+        result = cursor.fetchone()
 
-        if result == "existed":
+        if result:
             messagebox.showerror("Error", "User already exists")
-        elif result is True:
-            messagebox.showinfo("Success", "Welcome to the hood 😎")
-            register_window.destroy()
-            show_genre_preferences()
         else:
-            messagebox.showerror("Error", "Failed to register user")
+            register_window.destroy()
+            show_genre_preferences(username, password)
 
 
     def on_closing():

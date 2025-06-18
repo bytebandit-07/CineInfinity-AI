@@ -30,7 +30,7 @@ def show_genre_preferences(username, password):
 
         root.destroy()
         import test2
-        login.show_login_window()
+        test2.show_loginscreen_window()
 
     def on_checkbox_toggle(checkbox):
         """Handle checkbox toggle with animation and color change"""

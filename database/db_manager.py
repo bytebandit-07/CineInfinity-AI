@@ -6,7 +6,7 @@ conn = get_connection()
 cursor = conn.cursor()
 
 # Add a new user
-def register_user(username, password):
+def register_user(username, password, preferred_genres):
     try:
         # Check if user already exists
         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
@@ -14,13 +14,20 @@ def register_user(username, password):
         if result:
             return "existed"
 
-        # Insert new user
-        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
+        # Join the list of genres into a string
+        genre_string = ",".join(preferred_genres)
+
+        # Insert new user with preferred genres
+        cursor.execute(
+            "INSERT INTO users (username, password, preferred_genres) VALUES (%s, %s, %s)",
+            (username, password, genre_string)
+        )
         conn.commit()
         return True
 
     except mysql.connector.Error:
         return False
+
 
 
 def auth_user(username, password):

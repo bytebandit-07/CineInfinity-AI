@@ -75,292 +75,292 @@ movie_categories = {
          "description": "John Bennett, a man whose childhood wish of bringing his teddy bear to life came true, now must decide between keeping the relationship with the bear or his girlfriend, Lori."},
     ]
 }
-
-# Create main window
-root = ctk.CTk()
-ctk.set_appearance_mode("dark")
-root.geometry("900x600")
-root.title("Film Flow")
-
-try:
-    root.iconbitmap("../Assets/labeel.ico")
-except:
-    pass
-
-# --- Top Menu Frame ---
-menu_frame = ctk.CTkFrame(root, fg_color="#E50914", corner_radius=0)
-menu_frame.pack(fill="x", padx=0, pady=0)
-
-menu_inner = ctk.CTkFrame(menu_frame, fg_color="#E50914")
-menu_inner.pack(padx=10, pady=10, fill="x")
-
-title_label = ctk.CTkLabel(menu_inner, text="Film Flow", text_color="white", font=("morganite", 22, "bold"))
-title_label.pack(side="left", padx=(5, 20))
-
-search_bar = ctk.CTkEntry(menu_inner, placeholder_text="Search", placeholder_text_color="black",
-                          width=500, height=30, fg_color="#f0f0f0", text_color="black",
-                          border_width=0, corner_radius=150, justify="center")
-search_bar.pack(side="left", padx=(290, 10))
-
-# --- Main Scrollable Content ---
-content_frame = ctk.CTkScrollableFrame(
-    root,
-    fg_color="black",
-    scrollbar_button_color="#E50914",
-    scrollbar_button_hover_color="#B2070F"
-)
-content_frame.pack(fill="both", expand=True)
-
-# Configure the canvas for smoother scrolling
-content_frame._parent_canvas.configure(highlightthickness=0)
-content_frame._parent_canvas.configure(bg="black")
-
-selected_movie_frame = None
-detail_window = None
-
-
-def show_movie_details(movie_data):
-    global detail_window
-
-    # Close previous detail window if it exists
-    if detail_window is not None:
-        detail_window.destroy()
-
-    # Create new detail window
-    detail_window = ctk.CTkToplevel(root)
-    detail_window.title(movie_data["title"])
-    detail_window.geometry("800x600")
-    detail_window.resizable(False, False)
-    detail_window.transient(root)  # Set as child of main window
-    detail_window.grab_set()  # Make modal
-
-    # Main container
-    main_container = ctk.CTkFrame(detail_window, fg_color="black")
-    main_container.pack(fill="both", expand=True, padx=20, pady=20)
-
-    # Movie poster (left side)
-    poster_frame = ctk.CTkFrame(main_container, width=300, height=450, fg_color="#222222")
-    poster_frame.pack_propagate(False)
-    poster_frame.pack(side="left", fill="y", padx=(0, 20))
+def showdashboard(user_id):
+    # Create main window
+    root = ctk.CTk()
+    ctk.set_appearance_mode("dark")
+    root.geometry("900x600")
+    root.title("Film Flow")
 
     try:
-        img = Image.open(movie_data["image"])
-        img = img.resize((300, 450), Image.LANCZOS)
-        photo = ImageTk.PhotoImage(img)
+        root.iconbitmap("../Assets/labeel.ico")
     except:
-        img = Image.new("RGB", (300, 450), color="gray")
-        photo = ImageTk.PhotoImage(img)
+        pass
 
-    poster_label = tk.Label(poster_frame, image=photo, bg="#222222")
-    poster_label.image = photo
-    poster_label.pack(expand=True, fill="both")
+    # --- Top Menu Frame ---
+    menu_frame = ctk.CTkFrame(root, fg_color="#E50914", corner_radius=0)
+    menu_frame.pack(fill="x", padx=0, pady=0)
 
-    # Movie info (right side)
-    info_frame = ctk.CTkFrame(main_container, fg_color="black")
-    info_frame.pack(side="left", fill="both", expand=True)
+    menu_inner = ctk.CTkFrame(menu_frame, fg_color="#E50914")
+    menu_inner.pack(padx=10, pady=10, fill="x")
 
-    # Title
-    title_label = ctk.CTkLabel(info_frame, text=movie_data["title"],
-                               text_color="white", font=("Arial", 28, "bold"),
-                               anchor="w", justify="left")
-    title_label.pack(fill="x", pady=(0, 10))
+    title_label = ctk.CTkLabel(menu_inner, text="Film Flow", text_color="white", font=("morganite", 22, "bold"))
+    title_label.pack(side="left", padx=(5, 20))
 
-    # Rating
-    rating_frame = ctk.CTkFrame(info_frame, fg_color="black")
-    rating_frame.pack(fill="x", pady=(0, 20))
+    search_bar = ctk.CTkEntry(menu_inner, placeholder_text="Search", placeholder_text_color="black",
+                              width=500, height=30, fg_color="#f0f0f0", text_color="black",
+                              border_width=0, corner_radius=150, justify="center")
+    search_bar.pack(side="left", padx=(290, 10))
 
-    rating_stars = ctk.CTkLabel(rating_frame, text="★" * int(float(movie_data["rating"])),
-                                text_color="#E50914", font=("Arial", 16))
-    rating_stars.pack(side="left")
+    # --- Main Scrollable Content ---
+    content_frame = ctk.CTkScrollableFrame(
+        root,
+        fg_color="black",
+        scrollbar_button_color="#E50914",
+        scrollbar_button_hover_color="#B2070F"
+    )
+    content_frame.pack(fill="both", expand=True)
 
-    rating_text = ctk.CTkLabel(rating_frame, text=f"{movie_data['rating']}/10",
-                               text_color="white", font=("Arial", 16))
-    rating_text.pack(side="left", padx=(10, 0))
+    # Configure the canvas for smoother scrolling
+    content_frame._parent_canvas.configure(highlightthickness=0)
+    content_frame._parent_canvas.configure(bg="black")
 
-    # Genre
-    genre_label = ctk.CTkLabel(info_frame, text=f"Genre: {movie_data['genre']}",
-                               text_color="white", font=("Arial", 14))
-    genre_label.pack(fill="x", pady=(0, 10))
-
-    # Description
-    desc_label = ctk.CTkLabel(info_frame, text=movie_data["description"],
-                              text_color="white", font=("Arial", 14),
-                              wraplength=400, justify="left", anchor="w")
-    desc_label.pack(fill="x", pady=(0, 30))
-
-    # Close button
-    close_button = ctk.CTkButton(info_frame, text="Close", fg_color="#333333",
-                                 hover_color="#444444", command=detail_window.destroy)
-    close_button.pack(side="bottom", pady=(20, 0))
+    selected_movie_frame = None
+    detail_window = None
 
 
-def on_movie_select(frame, movie_data):
-    global selected_movie_frame
+    def show_movie_details(movie_data):
+        global detail_window
 
-    if selected_movie_frame:
-        def on_movie_select(frame, movie_data):
-            global selected_movie_frame
+        # Close previous detail window if it exists
+        if detail_window is not None:
+            detail_window.destroy()
 
-            if selected_movie_frame and selected_movie_frame.winfo_exists():
-                selected_movie_frame.configure(border_width=0, fg_color="#333333")
+        # Create new detail window
+        detail_window = ctk.CTkToplevel(root)
+        detail_window.title(movie_data["title"])
+        detail_window.geometry("800x600")
+        detail_window.resizable(False, False)
+        detail_window.transient(root)  # Set as child of main window
+        detail_window.grab_set()  # Make modal
 
-            frame.configure(border_width=2, border_color="#E50914", fg_color="#444444")
-            selected_movie_frame = frame
+        # Main container
+        main_container = ctk.CTkFrame(detail_window, fg_color="black")
+        main_container.pack(fill="both", expand=True, padx=20, pady=20)
 
-            print(f"Selected movie: {movie_data['title']}")
-            show_movie_details(movie_data)
-
-    frame.configure(border_width=2, border_color="#E50914", fg_color="#444444")
-    selected_movie_frame = frame
-
-    print(f"Selected movie: {movie_data['title']}")
-    show_movie_details(movie_data)
-
-
-def create_movie_row(container, movies, category_name):
-    # Category label
-    category_label = ctk.CTkLabel(container, text=category_name, text_color="white",
-                                  font=("Arial", 18, "bold"), anchor="w")
-    category_label.pack(fill="x", padx=20, pady=(20, 10))
-
-    # Container for horizontal scrolling
-    row_container = ctk.CTkFrame(container, fg_color="black")
-    row_container.pack(fill="x", padx=20, pady=(0, 20))
-
-    # Canvas and scrollbar for horizontal scrolling
-    canvas = tk.Canvas(row_container, bg="black", height=350, highlightthickness=0)
-    h_scroll = tk.Scrollbar(row_container, orient="horizontal", command=canvas.xview)
-
-    # Pack scrollbar and canvas
-    h_scroll.pack(side="bottom", fill="x")
-    canvas.pack(side="top", fill="both", expand=True)
-    canvas.configure(xscrollcommand=h_scroll.set)
-
-    # Frame inside canvas for movie posters
-    movie_row = ctk.CTkFrame(canvas, fg_color="black")
-    canvas.create_window((0, 0), window=movie_row, anchor="nw", tags="movie_row")
-
-    # Configure resizing
-    def _on_configure(event, canvas=canvas):
-        canvas.configure(scrollregion=canvas.bbox("all"))
-        canvas.itemconfigure("movie_row", width=event.width)
-
-    canvas.bind("<Configure>", _on_configure)
-
-    # Add movie posters
-    for movie in movies:
-        poster_frame = ctk.CTkFrame(movie_row, width=150, height=220,
-                                    fg_color="#333333", corner_radius=10)
+        # Movie poster (left side)
+        poster_frame = ctk.CTkFrame(main_container, width=300, height=450, fg_color="#222222")
         poster_frame.pack_propagate(False)
-        poster_frame.pack(side="left", padx=10)
-
-        # Hover effects
-        def on_enter(e, frame=poster_frame):
-            if frame != selected_movie_frame:
-                frame.configure(fg_color="#3a3a3a")
-
-        def on_leave(e, frame=poster_frame):
-            if frame != selected_movie_frame:
-                frame.configure(fg_color="#333333")
-
-        poster_frame.bind("<Enter>", on_enter)
-        poster_frame.bind("<Leave>", on_leave)
-        poster_frame.bind("<Button-1>",
-                          lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
-
-        # Image frame
-        image_frame = ctk.CTkFrame(poster_frame, fg_color="black", width=140, height=160)
-        image_frame.pack_propagate(False)
-        image_frame.pack(fill="x", padx=5, pady=(5, 2))
+        poster_frame.pack(side="left", fill="y", padx=(0, 20))
 
         try:
-            img = Image.open(movie["image"])
-            img = img.resize((140, 160), Image.LANCZOS)
+            img = Image.open(movie_data["image"])
+            img = img.resize((300, 450), Image.LANCZOS)
             photo = ImageTk.PhotoImage(img)
         except:
-            img = Image.new("RGB", (140, 160), color="gray")
+            img = Image.new("RGB", (300, 450), color="gray")
             photo = ImageTk.PhotoImage(img)
 
-        image_label = tk.Label(image_frame, image=photo, bg="black")
-        image_label.image = photo
-        image_label.pack(expand=True, fill="both")
-        image_label.bind("<Button-1>",
-                         lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
+        poster_label = tk.Label(poster_frame, image=photo, bg="#222222")
+        poster_label.image = photo
+        poster_label.pack(expand=True, fill="both")
 
-        # Title frame
-        title_frame = ctk.CTkFrame(poster_frame, fg_color="#333333")
-        title_frame.pack(fill="x", padx=5, pady=(2, 5))
+        # Movie info (right side)
+        info_frame = ctk.CTkFrame(main_container, fg_color="black")
+        info_frame.pack(side="left", fill="both", expand=True)
 
-        title_label = ctk.CTkLabel(title_frame, text=movie["title"], text_color="white",
-                                   font=("Arial", 12), wraplength=130, justify="center")
-        title_label.pack(expand=True, fill="both")
-        title_label.bind("<Button-1>",
-                         lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
+        # Title
+        title_label = ctk.CTkLabel(info_frame, text=movie_data["title"],
+                                   text_color="white", font=("Arial", 28, "bold"),
+                                   anchor="w", justify="left")
+        title_label.pack(fill="x", pady=(0, 10))
 
-    return row_container
+        # Rating
+        rating_frame = ctk.CTkFrame(info_frame, fg_color="black")
+        rating_frame.pack(fill="x", pady=(0, 20))
+
+        rating_stars = ctk.CTkLabel(rating_frame, text="★" * int(float(movie_data["rating"])),
+                                    text_color="#E50914", font=("Arial", 16))
+        rating_stars.pack(side="left")
+
+        rating_text = ctk.CTkLabel(rating_frame, text=f"{movie_data['rating']}/10",
+                                   text_color="white", font=("Arial", 16))
+        rating_text.pack(side="left", padx=(10, 0))
+
+        # Genre
+        genre_label = ctk.CTkLabel(info_frame, text=f"Genre: {movie_data['genre']}",
+                                   text_color="white", font=("Arial", 14))
+        genre_label.pack(fill="x", pady=(0, 10))
+
+        # Description
+        desc_label = ctk.CTkLabel(info_frame, text=movie_data["description"],
+                                  text_color="white", font=("Arial", 14),
+                                  wraplength=400, justify="left", anchor="w")
+        desc_label.pack(fill="x", pady=(0, 30))
+
+        # Close button
+        close_button = ctk.CTkButton(info_frame, text="Close", fg_color="#333333",
+                                     hover_color="#444444", command=detail_window.destroy)
+        close_button.pack(side="bottom", pady=(20, 0))
 
 
-def clear_content_frame():
-    for widget in content_frame.winfo_children():
-        widget.destroy()
+    def on_movie_select(frame, movie_data):
+        global selected_movie_frame
+
+        if selected_movie_frame:
+            def on_movie_select(frame, movie_data):
+                global selected_movie_frame
+
+                if selected_movie_frame and selected_movie_frame.winfo_exists():
+                    selected_movie_frame.configure(border_width=0, fg_color="#333333")
+
+                frame.configure(border_width=2, border_color="#E50914", fg_color="#444444")
+                selected_movie_frame = frame
+
+                print(f"Selected movie: {movie_data['title']}")
+                show_movie_details(movie_data)
+
+        frame.configure(border_width=2, border_color="#E50914", fg_color="#444444")
+        selected_movie_frame = frame
+
+        print(f"Selected movie: {movie_data['title']}")
+        show_movie_details(movie_data)
 
 
-def show_all_movies():
-    clear_content_frame()
-    for category, movies in movie_categories.items():
-        create_movie_row(content_frame, movies, category)
+    def create_movie_row(container, movies, category_name):
+        # Category label
+        category_label = ctk.CTkLabel(container, text=category_name, text_color="white",
+                                      font=("Arial", 18, "bold"), anchor="w")
+        category_label.pack(fill="x", padx=20, pady=(20, 10))
 
+        # Container for horizontal scrolling
+        row_container = ctk.CTkFrame(container, fg_color="black")
+        row_container.pack(fill="x", padx=20, pady=(0, 20))
 
-def search_movie(event=None):
-    query = search_bar.get().strip().lower()
-    if not query:
-        show_all_movies()
-        return
+        # Canvas and scrollbar for horizontal scrolling
+        canvas = tk.Canvas(row_container, bg="black", height=350, highlightthickness=0)
+        h_scroll = tk.Scrollbar(row_container, orient="horizontal", command=canvas.xview)
 
-    clear_content_frame()
+        # Pack scrollbar and canvas
+        h_scroll.pack(side="bottom", fill="x")
+        canvas.pack(side="top", fill="both", expand=True)
+        canvas.configure(xscrollcommand=h_scroll.set)
 
-    # Search for matching movies
-    found_movies = []
-    for category, movies in movie_categories.items():
+        # Frame inside canvas for movie posters
+        movie_row = ctk.CTkFrame(canvas, fg_color="black")
+        canvas.create_window((0, 0), window=movie_row, anchor="nw", tags="movie_row")
+
+        # Configure resizing
+        def _on_configure(event, canvas=canvas):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+            canvas.itemconfigure("movie_row", width=event.width)
+
+        canvas.bind("<Configure>", _on_configure)
+
+        # Add movie posters
         for movie in movies:
-            if (query in movie["title"].lower() or
-                    query in movie["genre"].lower() or
-                    query in movie["description"].lower()):
-                found_movies.append(movie)
+            poster_frame = ctk.CTkFrame(movie_row, width=150, height=220,
+                                        fg_color="#333333", corner_radius=10)
+            poster_frame.pack_propagate(False)
+            poster_frame.pack(side="left", padx=10)
 
-    if found_movies:
-        # Group by genre for better organization
-        movies_by_genre = {}
-        for movie in found_movies:
-            genre = movie["genre"]
-            if genre not in movies_by_genre:
-                movies_by_genre[genre] = []
-            movies_by_genre[genre].append(movie)
+            # Hover effects
+            def on_enter(e, frame=poster_frame):
+                if frame != selected_movie_frame:
+                    frame.configure(fg_color="#3a3a3a")
 
-        # Display results by genre
-        for genre, movies in movies_by_genre.items():
-            create_movie_row(content_frame, movies, f"Results for '{query}' in {genre}")
-    else:
-        # No results found
-        no_results = ctk.CTkLabel(content_frame,
-                                  text=f"No results found for '{query}'",
-                                  text_color="white", font=("Arial", 16))
-        no_results.pack(pady=50)
+            def on_leave(e, frame=poster_frame):
+                if frame != selected_movie_frame:
+                    frame.configure(fg_color="#333333")
+
+            poster_frame.bind("<Enter>", on_enter)
+            poster_frame.bind("<Leave>", on_leave)
+            poster_frame.bind("<Button-1>",
+                              lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
+
+            # Image frame
+            image_frame = ctk.CTkFrame(poster_frame, fg_color="black", width=140, height=160)
+            image_frame.pack_propagate(False)
+            image_frame.pack(fill="x", padx=5, pady=(5, 2))
+
+            try:
+                img = Image.open(movie["image"])
+                img = img.resize((140, 160), Image.LANCZOS)
+                photo = ImageTk.PhotoImage(img)
+            except:
+                img = Image.new("RGB", (140, 160), color="gray")
+                photo = ImageTk.PhotoImage(img)
+
+            image_label = tk.Label(image_frame, image=photo, bg="black")
+            image_label.image = photo
+            image_label.pack(expand=True, fill="both")
+            image_label.bind("<Button-1>",
+                             lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
+
+            # Title frame
+            title_frame = ctk.CTkFrame(poster_frame, fg_color="#333333")
+            title_frame.pack(fill="x", padx=5, pady=(2, 5))
+
+            title_label = ctk.CTkLabel(title_frame, text=movie["title"], text_color="white",
+                                       font=("Arial", 12), wraplength=130, justify="center")
+            title_label.pack(expand=True, fill="both")
+            title_label.bind("<Button-1>",
+                             lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
+
+        return row_container
 
 
-# Bind search functionality
-search_bar.bind("<Return>", search_movie)
+    def clear_content_frame():
+        for widget in content_frame.winfo_children():
+            widget.destroy()
 
 
-# Mouse wheel scrolling function
-def _on_mousewheel(event):
-    content_frame._parent_canvas.yview_scroll(int(-1 * (event.delta / 40)), "units")
+    def show_all_movies():
+        clear_content_frame()
+        for category, movies in movie_categories.items():
+            create_movie_row(content_frame, movies, category)
 
 
-# Bind mouse wheel to scrollable frame
-content_frame._parent_canvas.bind_all("<MouseWheel>", _on_mousewheel)
+    def search_movie(event=None):
+        query = search_bar.get().strip().lower()
+        if not query:
+            show_all_movies()
+            return
 
-# Initial display of all movies
-show_all_movies()
+        clear_content_frame()
 
-root.mainloop()
+        # Search for matching movies
+        found_movies = []
+        for category, movies in movie_categories.items():
+            for movie in movies:
+                if (query in movie["title"].lower() or
+                        query in movie["genre"].lower() or
+                        query in movie["description"].lower()):
+                    found_movies.append(movie)
+
+        if found_movies:
+            # Group by genre for better organization
+            movies_by_genre = {}
+            for movie in found_movies:
+                genre = movie["genre"]
+                if genre not in movies_by_genre:
+                    movies_by_genre[genre] = []
+                movies_by_genre[genre].append(movie)
+
+            # Display results by genre
+            for genre, movies in movies_by_genre.items():
+                create_movie_row(content_frame, movies, f"Results for '{query}' in {genre}")
+        else:
+            # No results found
+            no_results = ctk.CTkLabel(content_frame,
+                                      text=f"No results found for '{query}'",
+                                      text_color="white", font=("Arial", 16))
+            no_results.pack(pady=50)
+
+
+    # Bind search functionality
+    search_bar.bind("<Return>", search_movie)
+
+
+    # Mouse wheel scrolling function
+    def _on_mousewheel(event):
+        content_frame._parent_canvas.yview_scroll(int(-1 * (event.delta / 40)), "units")
+
+
+    # Bind mouse wheel to scrollable frame
+    content_frame._parent_canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+    # Initial display of all movies
+    show_all_movies()
+
+    root.mainloop()

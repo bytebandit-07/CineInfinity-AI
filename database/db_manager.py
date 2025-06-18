@@ -36,13 +36,13 @@ def auth_user(username, password):
         result = cursor.fetchone()
         if result:
             print("✅ Authentication successful.")
-            return True
+            return result  # Return the full row so you can access user_id, etc.
         else:
             print("❌ Authentication failed. Invalid username or password.")
-            return False
+            return None
     except mysql.connector.Error as err:
         print(f"❌ Error during authentication: {err}")
-        return False
+        return None
 
 # Log a search query for a user
 def log_search(user_id, query):

@@ -11,12 +11,16 @@ def show_loginscreen_window():
         username = login_text.get()
         password = password_text.get()
 
-        if auth_user(username, password):
+        user_data = auth_user(username, password)
+
+        if user_data:
+            user_id = user_data[0]  # assuming user_id is the first column in the users table
+            print("Logged in user_id:", user_id)
             root.destroy()
             import main_window
+            main_window.showdashboard(user_id)
         else:
             error_label.configure(text="Invalid credentials - Try again", text_color="#FF5555")
-
             try:
                 password_text.delete(0, 'end')
                 # Temporarily increase border width for visibility

@@ -41,7 +41,7 @@ def show_register_window(parent):
     frame = ctk.CTkFrame(register_window, fg_color="#333333", corner_radius=15)
     frame.pack(pady=100, padx=50, fill="both", expand=False)
 
-    label_title = ctk.CTkLabel(frame, text="Sign In", font=("Arial", 24, "bold"), text_color="white")
+    label_title = ctk.CTkLabel(frame, text="Sign Up", font=("Arial", 24, "bold"), text_color="white")
     label_title.pack(pady=20)
 
     entry_username = ctk.CTkEntry(frame, placeholder_text="Username", width=300)

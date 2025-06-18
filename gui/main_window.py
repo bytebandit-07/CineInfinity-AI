@@ -2,8 +2,9 @@ import tkinter as tk
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from ctypes import windll
-from database.db_manager import get_history
+from database.db_manager import get_history, get_movies_by_genre
 from model.recommender import recommend_by_user_history
+from gemini_api.extract_movie_description import get_movie_description
 
 # Enhanced movie data with more details and genres
 def get_recommendations(user_id: int) -> list[dict[str, str]]:
@@ -96,7 +97,7 @@ def get_recommendations(user_id: int) -> list[dict[str, str]]:
 def showdashboard(user_id):
     movie_categories = {
         "Recommended for you": get_recommendations(user_id),
-
+        "Comedy Movies": get_movies_by_genre('Comedy')
     }
     # Create main window
     root = ctk.CTk()
@@ -236,6 +237,7 @@ def showdashboard(user_id):
         selected_movie_frame = frame
 
         print(f"Selected movie: {movie_data['title']}")
+        movie_data['description'] = get_movie_description(movie_data['title'])
         show_movie_details(movie_data)
 
 

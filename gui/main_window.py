@@ -178,7 +178,7 @@ def showdashboard(user_id):
         rating_text.pack(side="left", padx=(10, 0))
 
         # Genre
-        genre_label = ctk.CTkLabel(info_frame, text=f"Genre: {movie_data['genre']}",
+        genre_label = ctk.CTkLabel(info_frame, text=f"Genre: {movie_data['genres']}",
                                    text_color="white", font=("Arial", 14))
         genre_label.pack(fill="x", pady=(0, 10))
 

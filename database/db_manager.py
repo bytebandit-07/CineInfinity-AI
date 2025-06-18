@@ -72,3 +72,47 @@ def get_user_id(username):
 def close():
     cursor.close()
     conn.close()
+
+# not running
+def preferred_movies(user_id):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Step 1: Fetch preferred genres from users table
+        cursor.execute("SELECT preferred_genres FROM users WHERE user_id = %s", (user_id,))
+        row = cursor.fetchone()
+
+        if not row or not row["preferred_genres"]:
+            print("❌ No preferred genres found for user.")
+            return []
+
+        genres_list = row["preferred_genres"].split()  # space-separated genres
+        movies = []
+
+        # Step 2: For each genre, get top-rated movies
+        for genre in genres_list:
+            query = """
+                SELECT title, avg_rating AS rating, genres AS genre
+                FROM movies
+                WHERE genres LIKE %s
+                ORDER BY avg_rating DESC
+                LIMIT 10
+            """
+            cursor.execute(query, (f"%{genre}%",))
+            results = cursor.fetchall()
+            movies.extend(results)
+
+        return movies
+
+    except Exception as e:
+        print(f"❌ Database error: {e}")
+        return []
+
+    finally:
+        if conn.is_connected():
+            cursor.close()
+            conn.close()
+
+reult = preferred_movies(7)
+print(reult)

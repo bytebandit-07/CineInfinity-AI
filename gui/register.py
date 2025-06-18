@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 from database.db_manager import register_user
+from question import show_genre_preferences
 
 def show_register_window(parent):
     def sign_in():
@@ -14,7 +15,7 @@ def show_register_window(parent):
         elif result is True:
             messagebox.showinfo("Success", "Welcome to the hood 😎")
             register_window.destroy()
-            parent.deiconify()
+            show_genre_preferences()
         else:
             messagebox.showerror("Error", "Failed to register user")
 

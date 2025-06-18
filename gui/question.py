@@ -29,7 +29,7 @@ def show_genre_preferences(username, password):
         register_user(username, password, selected_genres)
 
         root.destroy()
-        import login
+        import test2
         login.show_login_window()
 
     def on_checkbox_toggle(checkbox):

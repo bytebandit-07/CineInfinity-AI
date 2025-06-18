@@ -198,7 +198,17 @@ def on_movie_select(frame, movie_data):
     global selected_movie_frame
 
     if selected_movie_frame:
-        selected_movie_frame.configure(border_width=0, fg_color="#333333")
+        def on_movie_select(frame, movie_data):
+            global selected_movie_frame
+
+            if selected_movie_frame and selected_movie_frame.winfo_exists():
+                selected_movie_frame.configure(border_width=0, fg_color="#333333")
+
+            frame.configure(border_width=2, border_color="#E50914", fg_color="#444444")
+            selected_movie_frame = frame
+
+            print(f"Selected movie: {movie_data['title']}")
+            show_movie_details(movie_data)
 
     frame.configure(border_width=2, border_color="#E50914", fg_color="#444444")
     selected_movie_frame = frame

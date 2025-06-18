@@ -2,80 +2,102 @@ import tkinter as tk
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from ctypes import windll
+from database.db_manager import get_history
+from model.recommender import recommend_by_user_history
 
 # Enhanced movie data with more details and genres
-movie_categories = {
-    "Recommended for you": [
-        {"title": "The Shawshank Redemption", "image": "placeholder.jpg",
-         "rating": "9.3", "genre": "Drama",
-         "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."},
-        {"title": "The Godfather", "image": "placeholder.jpg",
-         "rating": "9.2", "genre": "Crime",
-         "description": "The aging patriarch of an organized crime dynasty transfers control to his reluctant son."},
-        {"title": "The Dark Knight", "image": "placeholder.jpg",
-         "rating": "9.0", "genre": "Action",
-         "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."},
-        {"title": "Pulp Fiction", "image": "placeholder.jpg",
-         "rating": "8.9", "genre": "Crime",
-         "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption."},
-        {"title": "Fight Club", "image": "placeholder.jpg",
-         "rating": "8.8", "genre": "Drama",
-         "description": "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."},
-        {"title": "Inception", "image": "placeholder.jpg",
-         "rating": "8.8", "genre": "Sci-Fi",
-         "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."},
-        {"title": "The Matrix", "image": "placeholder.jpg",
-         "rating": "8.7", "genre": "Sci-Fi",
-         "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."},
-    ],
-    "Trending Now": [
-        {"title": "Dune", "image": "placeholder.jpg",
-         "rating": "8.0", "genre": "Sci-Fi",
-         "description": "Feature adaptation of Frank Herbert's science fiction novel about the son of a noble family entrusted with the protection of the most valuable asset in the galaxy."},
-        {"title": "No Time to Die", "image": "placeholder.jpg",
-         "rating": "7.3", "genre": "Action",
-         "description": "James Bond has left active service. His peace is short-lived when Felix Leiter, an old friend from the CIA, turns up asking for help."},
-        {"title": "Spider-Man: No Way Home", "image": "placeholder.jpg",
-         "rating": "8.3", "genre": "Action",
-         "description": "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear."},
-        {"title": "The Batman", "image": "placeholder.jpg",
-         "rating": "7.9", "genre": "Action",
-         "description": "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption."},
-        {"title": "Shang-Chi", "image": "placeholder.jpg",
-         "rating": "7.4", "genre": "Action",
-         "description": "Shang-Chi, the master of weaponry-based Kung Fu, is forced to confront his past after being drawn into the Ten Rings organization."},
-        {"title": "Eternals", "image": "placeholder.jpg",
-         "rating": "6.3", "genre": "Sci-Fi",
-         "description": "The saga of the Eternals, a race of immortal beings who lived on Earth and shaped its history and civilizations."},
-        {"title": "Black Widow", "image": "placeholder.jpg",
-         "rating": "6.7", "genre": "Action",
-         "description": "Natasha Romanoff confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises."},
-    ],
-    "Comedy Movies": [
-        {"title": "The Hangover", "image": "placeholder.jpg",
-         "rating": "7.7", "genre": "Comedy",
-         "description": "Three buddies wake up from a bachelor party in Las Vegas, with no memory of the previous night and the bachelor missing. They make their way around the city in order to find their friend before his wedding."},
-        {"title": "Superbad", "image": "placeholder.jpg",
-         "rating": "7.6", "genre": "Comedy",
-         "description": "Two co-dependent high school seniors are forced to deal with separation anxiety after their plan to stage a booze-soaked party goes awry."},
-        {"title": "Bridesmaids", "image": "placeholder.jpg",
-         "rating": "6.8", "genre": "Comedy",
-         "description": "Competition between the maid of honor and a bridesmaid, over who is the bride's best friend, threatens to upend the life of an out-of-work pastry chef."},
-        {"title": "Step Brothers", "image": "placeholder.jpg",
-         "rating": "6.9", "genre": "Comedy",
-         "description": "Two aimless middle-aged losers still living at home are forced against their will to become roommates when their parents marry."},
-        {"title": "Anchorman", "image": "placeholder.jpg",
-         "rating": "7.2", "genre": "Comedy",
-         "description": "Ron Burgundy is San Diego's top-rated newsman in the male-dominated broadcasting of the 1970s, but that's all about to change when a new female employee arrives."},
-        {"title": "The 40-Year-Old Virgin", "image": "placeholder.jpg",
-         "rating": "7.1", "genre": "Comedy",
-         "description": "Goaded by his buddies, a nerdy guy who's never 'done the deed' only finds the pressure mounting when he meets a single mother."},
-        {"title": "Ted", "image": "placeholder.jpg",
-         "rating": "6.9", "genre": "Comedy",
-         "description": "John Bennett, a man whose childhood wish of bringing his teddy bear to life came true, now must decide between keeping the relationship with the bear or his girlfriend, Lori."},
-    ]
-}
+def get_recommendations(user_id: int) -> list[dict[str, str]]:
+    """
+    Recommends movies based on whether the user's logging in for the first time or not.
+    If it's user's first time, then popular movie according to preferred genres will be recommended.
+    Otherwise, the AI model will be used to recommend movies according to user's history.
+
+    :param user_id: Current user's id
+    :return: A list of movies.
+    """
+
+    history = get_history(user_id)
+    if not history: # If user's logging in for the first time
+        pass
+    return recommend_by_user_history(history, 10)
+
+
+# movie_categories = {
+#     "Recommended for you": [
+#         {"title": "The Shawshank Redemption", "image": "placeholder.jpg",
+#          "rating": "9.3", "genre": "Drama",
+#          "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."},
+#         {"title": "The Godfather", "image": "placeholder.jpg",
+#          "rating": "9.2", "genre": "Crime",
+#          "description": "The aging patriarch of an organized crime dynasty transfers control to his reluctant son."},
+#         {"title": "The Dark Knight", "image": "placeholder.jpg",
+#          "rating": "9.0", "genre": "Action",
+#          "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."},
+#         {"title": "Pulp Fiction", "image": "placeholder.jpg",
+#          "rating": "8.9", "genre": "Crime",
+#          "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption."},
+#         {"title": "Fight Club", "image": "placeholder.jpg",
+#          "rating": "8.8", "genre": "Drama",
+#          "description": "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."},
+#         {"title": "Inception", "image": "placeholder.jpg",
+#          "rating": "8.8", "genre": "Sci-Fi",
+#          "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."},
+#         {"title": "The Matrix", "image": "placeholder.jpg",
+#          "rating": "8.7", "genre": "Sci-Fi",
+#          "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."},
+#     ],
+#     "Trending Now": [
+#         {"title": "Dune", "image": "placeholder.jpg",
+#          "rating": "8.0", "genre": "Sci-Fi",
+#          "description": "Feature adaptation of Frank Herbert's science fiction novel about the son of a noble family entrusted with the protection of the most valuable asset in the galaxy."},
+#         {"title": "No Time to Die", "image": "placeholder.jpg",
+#          "rating": "7.3", "genre": "Action",
+#          "description": "James Bond has left active service. His peace is short-lived when Felix Leiter, an old friend from the CIA, turns up asking for help."},
+#         {"title": "Spider-Man: No Way Home", "image": "placeholder.jpg",
+#          "rating": "8.3", "genre": "Action",
+#          "description": "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear."},
+#         {"title": "The Batman", "image": "placeholder.jpg",
+#          "rating": "7.9", "genre": "Action",
+#          "description": "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption."},
+#         {"title": "Shang-Chi", "image": "placeholder.jpg",
+#          "rating": "7.4", "genre": "Action",
+#          "description": "Shang-Chi, the master of weaponry-based Kung Fu, is forced to confront his past after being drawn into the Ten Rings organization."},
+#         {"title": "Eternals", "image": "placeholder.jpg",
+#          "rating": "6.3", "genre": "Sci-Fi",
+#          "description": "The saga of the Eternals, a race of immortal beings who lived on Earth and shaped its history and civilizations."},
+#         {"title": "Black Widow", "image": "placeholder.jpg",
+#          "rating": "6.7", "genre": "Action",
+#          "description": "Natasha Romanoff confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises."},
+#     ],
+#     "Comedy Movies": [
+#         {"title": "The Hangover", "image": "placeholder.jpg",
+#          "rating": "7.7", "genre": "Comedy",
+#          "description": "Three buddies wake up from a bachelor party in Las Vegas, with no memory of the previous night and the bachelor missing. They make their way around the city in order to find their friend before his wedding."},
+#         {"title": "Superbad", "image": "placeholder.jpg",
+#          "rating": "7.6", "genre": "Comedy",
+#          "description": "Two co-dependent high school seniors are forced to deal with separation anxiety after their plan to stage a booze-soaked party goes awry."},
+#         {"title": "Bridesmaids", "image": "placeholder.jpg",
+#          "rating": "6.8", "genre": "Comedy",
+#          "description": "Competition between the maid of honor and a bridesmaid, over who is the bride's best friend, threatens to upend the life of an out-of-work pastry chef."},
+#         {"title": "Step Brothers", "image": "placeholder.jpg",
+#          "rating": "6.9", "genre": "Comedy",
+#          "description": "Two aimless middle-aged losers still living at home are forced against their will to become roommates when their parents marry."},
+#         {"title": "Anchorman", "image": "placeholder.jpg",
+#          "rating": "7.2", "genre": "Comedy",
+#          "description": "Ron Burgundy is San Diego's top-rated newsman in the male-dominated broadcasting of the 1970s, but that's all about to change when a new female employee arrives."},
+#         {"title": "The 40-Year-Old Virgin", "image": "placeholder.jpg",
+#          "rating": "7.1", "genre": "Comedy",
+#          "description": "Goaded by his buddies, a nerdy guy who's never 'done the deed' only finds the pressure mounting when he meets a single mother."},
+#         {"title": "Ted", "image": "placeholder.jpg",
+#          "rating": "6.9", "genre": "Comedy",
+#          "description": "John Bennett, a man whose childhood wish of bringing his teddy bear to life came true, now must decide between keeping the relationship with the bear or his girlfriend, Lori."},
+#     ]
+# }
 def showdashboard(user_id):
+    movie_categories = {
+        "Recommended for you": get_recommendations(user_id),
+
+    }
     # Create main window
     root = ctk.CTk()
     ctk.set_appearance_mode("dark")

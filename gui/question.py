@@ -2,7 +2,7 @@
 import tkinter as tk
 import customtkinter as ctk
 
-def show_genre_preferences():
+def show_genre_preferences(username, password):
     root = ctk.CTk()
     root._set_appearance_mode("dark")
     root.title("What do you like?")
@@ -14,6 +14,23 @@ def show_genre_preferences():
         root.attributes('-topmost', 1)
     except:
         pass
+
+    def on_submit():
+        selected_genres = []
+        checkboxes = [
+            select1, select2, select3, select4, select5, select6, select7, select8, select9, select10,
+            select11, select12, select13, select14, select15, select16, select17, select18, select19
+        ]
+        for checkbox in checkboxes:
+            if checkbox.get() == 1:
+                selected_genres.append(checkbox.cget("text").split()[0])  # Only genre word
+
+        from database.db_manager import register_user
+        register_user(username, password, selected_genres)
+
+        root.destroy()
+        import login
+        login.show_login_window()
 
     def on_checkbox_toggle(checkbox):
         """Handle checkbox toggle with animation and color change"""
@@ -213,11 +230,24 @@ def show_genre_preferences():
                                command=lambda: on_checkbox_toggle(select19))
     select19.grid(row=9, column=0, padx=350, pady=12, sticky="W")
 
-    submit_button = ctk.CTkButton(root, text='SUBMIT', font=('Ink Free', 15, 'bold'), corner_radius=50, fg_color='red',
-                                  hover_color='red')
+    submit_button = ctk.CTkButton(
+        root,
+        text='SUBMIT',
+        font=('Ink Free', 15, 'bold'),
+        corner_radius=50,
+        fg_color='red',
+        hover_color='red',
+        command=on_submit  # ✅ Now works correctly
+    )
     submit_button.grid(row=12, column=0, padx=220, pady=0, sticky="W")
 
     root.mainloop()
+
+
+
+
+
+
 
 
 

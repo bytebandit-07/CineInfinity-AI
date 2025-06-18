@@ -78,8 +78,9 @@ def recommend_by_user_history(user_history_titles: list, n_recommendations: int 
                 'movieId': movie['movieId'],
                 'title': movie['title'],
                 'genres': movie['genres'],
-                'avg_rating': round(movie['avg_rating'], 1),
-                'similarity': round(1 - dist, 3)
+                'rating': round(movie['avg_rating'], 1),
+                'description': "", # To be filled later
+                'image': "placeholder.jpg" # Image path
             })
 
         if len(recommendations) >= n_recommendations:

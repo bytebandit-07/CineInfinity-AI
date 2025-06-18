@@ -114,5 +114,25 @@ def preferred_movies(user_id):
             cursor.close()
             conn.close()
 
+def get_movies_by_genre(genre: str) -> list[dict[str, str]]:
+    data = (f'%{genre}%',)
+    result = []
+    try:
+        cursor.execute("SELECT movieid, title, genres, avg_rating FROM movies WHERE genres LIKE %s", data)
+        rows = cursor.fetchall()
+        for row in rows:
+            movie_dict = {
+                "movieId": str(row[0]),
+                "title": row[1],
+                "genres": row[2],
+                "rating": str(row[3]),
+                "description": "",
+                'image': "placeholder.jpg" # Image path
+            }
+            result.append(movie_dict)
+    except mysql.connector.Error as err:
+        print(f"❌ Error retrieving history: {err}")
+    return result
+
 reult = preferred_movies(7)
 print(reult)

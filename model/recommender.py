@@ -1,13 +1,14 @@
 import pandas as pd
 import pickle
 
+from pycparser.ply.yacc import resultlimit
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.neighbors import NearestNeighbors
 
-# Paths to models and dataset
-TFIDF_MODEL_PATH = "../model/tfidf_vectorizer.pkl"
-KNN_MODEL_PATH = "../model/knn_movie_model.pkl"
-PROCESSED_DATA_PATH = "../notebook/processed_movies.csv"
+# Paths to models and dataset (absolute way, sochange according to yours)
+TFIDF_MODEL_PATH = "C:\\Users\\talha\\Documents\\Semester 4\\Artificial Intelligence\\Project\\CineInfinity-Ai\\model\\tfidf_vectorizer.pkl"
+KNN_MODEL_PATH = "C:\\Users\\talha\\Documents\\Semester 4\\Artificial Intelligence\\Project\\CineInfinity-Ai\\model\\knn_movie_model.pkl"
+PROCESSED_DATA_PATH = "C:\\Users\\talha\\Documents\\Semester 4\\Artificial Intelligence\\Project\\CineInfinity-Ai\\notebook\\processed_movies.csv"
 
 
 # Load models and data once
@@ -24,13 +25,11 @@ def load_models_and_data():
 def recommend_by_title(movie_title: str, n_recommendations: int = 5):
     tfidf, knn, movies = load_models_and_data()
 
-    # Try to find the movie
     matches = movies[movies['title'].str.contains(movie_title, case=False)]
     if matches.empty:
-        print(f"❌ No movie found with title: {movie_title}")
+        print(f"No movie found with title: {movie_title}")
         return []
 
-    # Use first matching result
     idx = matches.index[0]
     input_movie = movies.iloc[idx]
 
@@ -41,50 +40,58 @@ def recommend_by_title(movie_title: str, n_recommendations: int = 5):
     for i, dist in zip(indices[0][1:], distances[0][1:]):
         movie = movies.iloc[i]
         recommendations.append({
-            'movieId': movie['movieId'],
+            'movieId': int(movie['movieId']),
             'title': movie['title'],
             'genres': movie['genres'],
-            'avg_rating': round(movie['avg_rating'], 1),
-            'similarity': round(1 - dist, 3)
+            'avg_rating': round(float(movie['avg_rating']), 1),
+            'similarity': round((1 - float(dist)) * 100, 2)
         })
 
     return recommendations
 
 
-# 🧑 Recommend for a user based on search history
-def recommend_by_user_history(user_history_titles: list, n_recommendations: int = 5):
+# Recommend for a user based on search history
+def recommend_by_user_history(user_history_titles: list, n: int = 10):
     tfidf, knn, movies = load_models_and_data()
+    genres = []
 
-    genre_texts = []
-    for title in user_history_titles:
-        matches = movies[movies['title'].str.contains(title, case=False)]
-        if not matches.empty:
-            genre_texts.append(matches.iloc[0]['genres'])
+    history_lower = [t.lower() for t in user_history_titles]
+    for title in history_lower:
+        match = movies[movies['title'].str.lower().str.contains(title)]
+        if not match.empty:
+            genres.append(match.iloc[0]['genres'])
 
-    if not genre_texts:
-        print("❌ No valid movies found in history.")
+    if not genres:
         return []
 
-    # Aggregate genres from history
-    combined_genres = " ".join(genre_texts)
-    input_vector = tfidf.transform([combined_genres])
-    distances, indices = knn.kneighbors(input_vector, n_neighbors=n_recommendations + 1)
+    input_vec = tfidf.transform([" ".join(genres)])
+    distances, indices = knn.kneighbors(input_vec, n_neighbors=n + 10)
 
-    recommendations = []
+    recs = []
     for i, dist in zip(indices[0], distances[0]):
         movie = movies.iloc[i]
-        if movie['title'] not in user_history_titles:  # avoid suggesting same ones
-            recommendations.append({
+        if all(h not in movie['title'].lower() for h in history_lower):
+            recs.append({
                 'movieId': movie['movieId'],
                 'title': movie['title'],
                 'genres': movie['genres'],
                 'rating': round(movie['avg_rating'], 1),
-                'description': "", # To be filled later
-                'image': "placeholder.jpg" # Image path
+                'similarity': round((1 - float(dist)) * 100, 2)
             })
-
-        if len(recommendations) >= n_recommendations:
+        if len(recs) == n:
             break
 
-    return recommendations
+    return recs
 
+# just testing for functions
+# title one
+result = recommend_by_title("Interstellar")
+print(result)
+
+
+# list one
+history = ["Interstellar", "Inception", "Watchmen"]
+recs = recommend_by_user_history(history)
+
+for rec in recs:
+    print(f"{rec['movieId']} - {rec['title']} - {rec['genres']} - {rec['rating']} - Similarity: {rec['similarity']}")

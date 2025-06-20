@@ -1,390 +1,177 @@
-import tkinter as tk
 import customtkinter as ctk
-from PIL import Image, ImageTk
-from ctypes import windll
-from database.db_manager import get_history, get_movies_by_genre
-from model.recommender import recommend_by_user_history
-from gemini_api.extract_movie_description import get_movie_description
-
-# Enhanced movie data with more details and genres
-def get_recommendations(user_id: int) -> list[dict[str, str]]:
-    """
-    Recommends movies based on whether the user's logging in for the first time or not.
-    If it's user's first time, then popular movie according to preferred genres will be recommended.
-    Otherwise, the AI model will be used to recommend movies according to user's history.
-
-    :param user_id: Current user's id
-    :return: A list of movies.
-    """
-
-    history = get_history(user_id)
-    if not history: # If user's logging in for the first time
-        pass
-    return recommend_by_user_history(history, 10)
+from PIL import Image
+from io import BytesIO
+import requests
 
 
-# movie_categories = {
-#     "Recommended for you": [
-#         {"title": "The Shawshank Redemption", "image": "placeholder.jpg",
-#          "rating": "9.3", "genre": "Drama",
-#          "description": "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency."},
-#         {"title": "The Godfather", "image": "placeholder.jpg",
-#          "rating": "9.2", "genre": "Crime",
-#          "description": "The aging patriarch of an organized crime dynasty transfers control to his reluctant son."},
-#         {"title": "The Dark Knight", "image": "placeholder.jpg",
-#          "rating": "9.0", "genre": "Action",
-#          "description": "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."},
-#         {"title": "Pulp Fiction", "image": "placeholder.jpg",
-#          "rating": "8.9", "genre": "Crime",
-#          "description": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption."},
-#         {"title": "Fight Club", "image": "placeholder.jpg",
-#          "rating": "8.8", "genre": "Drama",
-#          "description": "An insomniac office worker and a devil-may-care soapmaker form an underground fight club that evolves into something much, much more."},
-#         {"title": "Inception", "image": "placeholder.jpg",
-#          "rating": "8.8", "genre": "Sci-Fi",
-#          "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."},
-#         {"title": "The Matrix", "image": "placeholder.jpg",
-#          "rating": "8.7", "genre": "Sci-Fi",
-#          "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."},
-#     ],
-#     "Trending Now": [
-#         {"title": "Dune", "image": "placeholder.jpg",
-#          "rating": "8.0", "genre": "Sci-Fi",
-#          "description": "Feature adaptation of Frank Herbert's science fiction novel about the son of a noble family entrusted with the protection of the most valuable asset in the galaxy."},
-#         {"title": "No Time to Die", "image": "placeholder.jpg",
-#          "rating": "7.3", "genre": "Action",
-#          "description": "James Bond has left active service. His peace is short-lived when Felix Leiter, an old friend from the CIA, turns up asking for help."},
-#         {"title": "Spider-Man: No Way Home", "image": "placeholder.jpg",
-#          "rating": "8.3", "genre": "Action",
-#          "description": "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear."},
-#         {"title": "The Batman", "image": "placeholder.jpg",
-#          "rating": "7.9", "genre": "Action",
-#          "description": "When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city's hidden corruption."},
-#         {"title": "Shang-Chi", "image": "placeholder.jpg",
-#          "rating": "7.4", "genre": "Action",
-#          "description": "Shang-Chi, the master of weaponry-based Kung Fu, is forced to confront his past after being drawn into the Ten Rings organization."},
-#         {"title": "Eternals", "image": "placeholder.jpg",
-#          "rating": "6.3", "genre": "Sci-Fi",
-#          "description": "The saga of the Eternals, a race of immortal beings who lived on Earth and shaped its history and civilizations."},
-#         {"title": "Black Widow", "image": "placeholder.jpg",
-#          "rating": "6.7", "genre": "Action",
-#          "description": "Natasha Romanoff confronts the darker parts of her ledger when a dangerous conspiracy with ties to her past arises."},
-#     ],
-#     "Comedy Movies": [
-#         {"title": "The Hangover", "image": "placeholder.jpg",
-#          "rating": "7.7", "genre": "Comedy",
-#          "description": "Three buddies wake up from a bachelor party in Las Vegas, with no memory of the previous night and the bachelor missing. They make their way around the city in order to find their friend before his wedding."},
-#         {"title": "Superbad", "image": "placeholder.jpg",
-#          "rating": "7.6", "genre": "Comedy",
-#          "description": "Two co-dependent high school seniors are forced to deal with separation anxiety after their plan to stage a booze-soaked party goes awry."},
-#         {"title": "Bridesmaids", "image": "placeholder.jpg",
-#          "rating": "6.8", "genre": "Comedy",
-#          "description": "Competition between the maid of honor and a bridesmaid, over who is the bride's best friend, threatens to upend the life of an out-of-work pastry chef."},
-#         {"title": "Step Brothers", "image": "placeholder.jpg",
-#          "rating": "6.9", "genre": "Comedy",
-#          "description": "Two aimless middle-aged losers still living at home are forced against their will to become roommates when their parents marry."},
-#         {"title": "Anchorman", "image": "placeholder.jpg",
-#          "rating": "7.2", "genre": "Comedy",
-#          "description": "Ron Burgundy is San Diego's top-rated newsman in the male-dominated broadcasting of the 1970s, but that's all about to change when a new female employee arrives."},
-#         {"title": "The 40-Year-Old Virgin", "image": "placeholder.jpg",
-#          "rating": "7.1", "genre": "Comedy",
-#          "description": "Goaded by his buddies, a nerdy guy who's never 'done the deed' only finds the pressure mounting when he meets a single mother."},
-#         {"title": "Ted", "image": "placeholder.jpg",
-#          "rating": "6.9", "genre": "Comedy",
-#          "description": "John Bennett, a man whose childhood wish of bringing his teddy bear to life came true, now must decide between keeping the relationship with the bear or his girlfriend, Lori."},
-#     ]
-# }
-def showdashboard(user_id):
-    movie_categories = {
-        "Recommended for you": get_recommendations(user_id),
-        "Comedy Movies": get_movies_by_genre('Comedy')
-    }
-    # Create main window
-    root = ctk.CTk()
-    ctk.set_appearance_mode("dark")
-    root.geometry("900x600")
-    root.title("Film Flow")
+# We are no longer using threading to remove the source of the bug
+# import threading
 
-    try:
-        root.iconbitmap("../Assets/labeel.ico")
-    except:
-        pass
+class MainWindow(ctk.CTk):
+    def __init__(self, backend, username):
+        super().__init__()
+        self.backend = backend
+        self.username = username
+        self.photo_references = []  # Still keeping this as a safety measure
 
-    # --- Top Menu Frame ---
-    menu_frame = ctk.CTkFrame(root, fg_color="#E50914", corner_radius=0)
-    menu_frame.pack(fill="x", padx=0, pady=0)
+        self.setup_ui()
+        self.populate_dashboard()
 
-    menu_inner = ctk.CTkFrame(menu_frame, fg_color="#E50914")
-    menu_inner.pack(padx=10, pady=10, fill="x")
+    def setup_ui(self):
+        ctk.set_appearance_mode("dark")
+        self.title(f"Film Flow - Welcome, {self.username}")
+        self.geometry("1000x700")
 
-    title_label = ctk.CTkLabel(menu_inner, text="Film Flow", text_color="white", font=("morganite", 22, "bold"))
-    title_label.pack(side="left", padx=(5, 20))
+        top_frame = ctk.CTkFrame(self, fg_color="#E50914", corner_radius=0)
+        top_frame.pack(fill="x")
 
-    search_bar = ctk.CTkEntry(menu_inner, placeholder_text="Search", placeholder_text_color="black",
-                              width=500, height=30, fg_color="#f0f0f0", text_color="black",
-                              border_width=0, corner_radius=150, justify="center")
-    search_bar.pack(side="left", padx=(290, 10))
+        ctk.CTkLabel(top_frame, text="Film Flow", font=("Arial", 22, "bold"), text_color="white").pack(side="left",
+                                                                                                       padx=20, pady=10)
+        self.search_entry = ctk.CTkEntry(top_frame, width=400, placeholder_text="Search for a movie...",
+                                         corner_radius=20)
+        self.search_entry.pack(side="left", padx=10, pady=10, expand=True)
+        self.search_entry.bind("<Return>", lambda e: self.search_and_display())
+        ctk.CTkButton(top_frame, text="Search", width=80, corner_radius=20, command=self.search_and_display).pack(
+            side="left", padx=(0, 20), pady=10)
+        ctk.CTkButton(top_frame, text="Logout", fg_color="#000", hover_color="#111", command=self.do_logout).pack(
+            side="right", padx=20, pady=10)
 
-    # --- Main Scrollable Content ---
-    content_frame = ctk.CTkScrollableFrame(
-        root,
-        fg_color="black",
-        scrollbar_button_color="#E50914",
-        scrollbar_button_hover_color="#B2070F"
-    )
-    content_frame.pack(fill="both", expand=True)
+        self.content_frame = ctk.CTkScrollableFrame(self, fg_color="black", scrollbar_button_color="#E50914",
+                                                    scrollbar_button_hover_color="#B2070F")
+        self.content_frame.pack(fill="both", expand=True)
 
-    # Configure the canvas for smoother scrolling
-    content_frame._parent_canvas.configure(highlightthickness=0)
-    content_frame._parent_canvas.configure(bg="black")
+    def do_logout(self):
+        self.destroy()
+        from gui.main import show_login
+        show_login()
 
-    selected_movie_frame = None
-    detail_window = None
+    def show_movie_details(self, movie_info, poster_image=None):
+        detail_window = ctk.CTkToplevel(self)
+        detail_window.title(movie_info['title'])
+        detail_window.geometry("500x600")
+        detail_window.transient(self)
+        detail_window.grab_set()
 
+        x = self.winfo_x() + (self.winfo_width() // 2) - (500 // 2)
+        y = self.winfo_y() + (self.winfo_height() // 2) - (600 // 2)
+        detail_window.geometry(f"500x600+{x}+{y}")
 
-    def show_movie_details(movie_data):
-        global detail_window
+        detail_frame = ctk.CTkFrame(detail_window, fg_color="#1A1A1A", corner_radius=10)
+        detail_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
-        # Close previous detail window if it exists
-        if detail_window is not None:
-            detail_window.destroy()
+        description = self.backend.get_movie_description(movie_info['title'])
 
-        # Create new detail window
-        detail_window = ctk.CTkToplevel(root)
-        detail_window.title(movie_data["title"])
-        detail_window.geometry("800x600")
-        detail_window.resizable(False, False)
-        detail_window.transient(root)  # Set as child of main window
-        detail_window.grab_set()  # Make modal
+        ctk.CTkLabel(detail_frame, text=movie_info['title'], font=("Arial", 24, "bold"), text_color="#E50914",
+                     wraplength=450).pack(pady=(10, 5))
+        ctk.CTkLabel(detail_frame, text=f"Genre: {movie_info.get('genres', 'N/A')}", font=("Arial", 14),
+                     text_color="#AAAAAA").pack()
+        ctk.CTkLabel(detail_frame, text=f"Rating: {movie_info.get('avg_rating', 'N/A')}", font=("Arial", 16, "bold"),
+                     text_color="#F5C518").pack(pady=5)
 
-        # Main container
-        main_container = ctk.CTkFrame(detail_window, fg_color="black")
-        main_container.pack(fill="both", expand=True, padx=20, pady=20)
-
-        # Movie poster (left side)
-        poster_frame = ctk.CTkFrame(main_container, width=300, height=450, fg_color="#222222")
-        poster_frame.pack_propagate(False)
-        poster_frame.pack(side="left", fill="y", padx=(0, 20))
-
-        try:
-            img = Image.open(movie_data["image"])
-            img = img.resize((300, 450), Image.LANCZOS)
-            photo = ImageTk.PhotoImage(img)
-        except:
-            img = Image.new("RGB", (300, 450), color="gray")
-            photo = ImageTk.PhotoImage(img)
-
-        poster_label = tk.Label(poster_frame, image=photo, bg="#222222")
-        poster_label.image = photo
-        poster_label.pack(expand=True, fill="both")
-
-        # Movie info (right side)
-        info_frame = ctk.CTkFrame(main_container, fg_color="black")
-        info_frame.pack(side="left", fill="both", expand=True)
-
-        # Title
-        title_label = ctk.CTkLabel(info_frame, text=movie_data["title"],
-                                   text_color="white", font=("Arial", 28, "bold"),
-                                   anchor="w", justify="left")
-        title_label.pack(fill="x", pady=(0, 10))
-
-        # Rating
-        rating_frame = ctk.CTkFrame(info_frame, fg_color="black")
-        rating_frame.pack(fill="x", pady=(0, 20))
-
-        rating_stars = ctk.CTkLabel(rating_frame, text="★" * int(float(movie_data["rating"])),
-                                    text_color="#E50914", font=("Arial", 16))
-        rating_stars.pack(side="left")
-
-        rating_text = ctk.CTkLabel(rating_frame, text=f"{movie_data['rating']}/10",
-                                   text_color="white", font=("Arial", 16))
-        rating_text.pack(side="left", padx=(10, 0))
-
-        # Genre
-        genre_label = ctk.CTkLabel(info_frame, text=f"Genre: {movie_data['genres']}",
-                                   text_color="white", font=("Arial", 14))
-        genre_label.pack(fill="x", pady=(0, 10))
-
-        # Description
-        desc_label = ctk.CTkLabel(info_frame, text=movie_data["description"],
-                                  text_color="white", font=("Arial", 14),
-                                  wraplength=400, justify="left", anchor="w")
-        desc_label.pack(fill="x", pady=(0, 30))
-
-        # Close button
-        close_button = ctk.CTkButton(info_frame, text="Close", fg_color="#333333",
-                                     hover_color="#444444", command=detail_window.destroy)
-        close_button.pack(side="bottom", pady=(20, 0))
-
-
-    def on_movie_select(frame, movie_data):
-        global selected_movie_frame
-
-        if selected_movie_frame:
-            def on_movie_select(frame, movie_data):
-                global selected_movie_frame
-
-                if selected_movie_frame and selected_movie_frame.winfo_exists():
-                    selected_movie_frame.configure(border_width=0, fg_color="#333333")
-
-                frame.configure(border_width=2, border_color="#E50914", fg_color="#444444")
-                selected_movie_frame = frame
-
-                print(f"Selected movie: {movie_data['title']}")
-                show_movie_details(movie_data)
-
-        frame.configure(border_width=2, border_color="#E50914", fg_color="#444444")
-        selected_movie_frame = frame
-
-        print(f"Selected movie: {movie_data['title']}")
-        movie_data['description'] = get_movie_description(movie_data['title'])
-        show_movie_details(movie_data)
-
-
-    def create_movie_row(container, movies, category_name):
-        # Category label
-        category_label = ctk.CTkLabel(container, text=category_name, text_color="white",
-                                      font=("Arial", 18, "bold"), anchor="w")
-        category_label.pack(fill="x", padx=20, pady=(20, 10))
-
-        # Container for horizontal scrolling
-        row_container = ctk.CTkFrame(container, fg_color="black")
-        row_container.pack(fill="x", padx=20, pady=(0, 20))
-
-        # Canvas and scrollbar for horizontal scrolling
-        canvas = tk.Canvas(row_container, bg="black", height=350, highlightthickness=0)
-        h_scroll = tk.Scrollbar(row_container, orient="horizontal", command=canvas.xview)
-
-        # Pack scrollbar and canvas
-        h_scroll.pack(side="bottom", fill="x")
-        canvas.pack(side="top", fill="both", expand=True)
-        canvas.configure(xscrollcommand=h_scroll.set)
-
-        # Frame inside canvas for movie posters
-        movie_row = ctk.CTkFrame(canvas, fg_color="black")
-        canvas.create_window((0, 0), window=movie_row, anchor="nw", tags="movie_row")
-
-        # Configure resizing
-        def _on_configure(event, canvas=canvas):
-            canvas.configure(scrollregion=canvas.bbox("all"))
-            canvas.itemconfigure("movie_row", width=event.width)
-
-        canvas.bind("<Configure>", _on_configure)
-
-        # Add movie posters
-        for movie in movies:
-            poster_frame = ctk.CTkFrame(movie_row, width=150, height=220,
-                                        fg_color="#333333", corner_radius=10)
-            poster_frame.pack_propagate(False)
-            poster_frame.pack(side="left", padx=10)
-
-            # Hover effects
-            def on_enter(e, frame=poster_frame):
-                if frame != selected_movie_frame:
-                    frame.configure(fg_color="#3a3a3a")
-
-            def on_leave(e, frame=poster_frame):
-                if frame != selected_movie_frame:
-                    frame.configure(fg_color="#333333")
-
-            poster_frame.bind("<Enter>", on_enter)
-            poster_frame.bind("<Leave>", on_leave)
-            poster_frame.bind("<Button-1>",
-                              lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
-
-            # Image frame
-            image_frame = ctk.CTkFrame(poster_frame, fg_color="black", width=140, height=160)
-            image_frame.pack_propagate(False)
-            image_frame.pack(fill="x", padx=5, pady=(5, 2))
-
+        if poster_image:
+            photo = ctk.CTkImage(light_image=poster_image, size=(200, 280))
+        else:
             try:
-                img = Image.open(movie["image"])
-                img = img.resize((140, 160), Image.LANCZOS)
-                photo = ImageTk.PhotoImage(img)
-            except:
-                img = Image.new("RGB", (140, 160), color="gray")
-                photo = ImageTk.PhotoImage(img)
+                poster_url = self.backend.get_image_url(movie_info['title'])
+                if not poster_url: raise ValueError("No URL")
+                resp = requests.get(poster_url, timeout=5)
+                resp.raise_for_status()
+                img = Image.open(BytesIO(resp.content))
+                photo = ctk.CTkImage(light_image=img, size=(200, 280))
+            except Exception:
+                img = Image.new("RGB", (200, 280), color="#555555")
+                photo = ctk.CTkImage(light_image=img, size=(200, 280))
 
-            image_label = tk.Label(image_frame, image=photo, bg="black")
-            image_label.image = photo
-            image_label.pack(expand=True, fill="both")
-            image_label.bind("<Button-1>",
-                             lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
+        img_label = ctk.CTkLabel(detail_frame, image=photo, text="")
+        img_label.image = photo
+        self.photo_references.append(photo)
+        img_label.pack(pady=15)
 
-            # Title frame
-            title_frame = ctk.CTkFrame(poster_frame, fg_color="#333333")
-            title_frame.pack(fill="x", padx=5, pady=(2, 5))
+        desc_label = ctk.CTkLabel(detail_frame, text=description, font=("Arial", 14), text_color="white",
+                                  wraplength=450, justify="left")
+        desc_label.pack(pady=(0, 20), fill="x", expand=True)
 
-            title_label = ctk.CTkLabel(title_frame, text=movie["title"], text_color="white",
-                                       font=("Arial", 12), wraplength=130, justify="center")
-            title_label.pack(expand=True, fill="both")
-            title_label.bind("<Button-1>",
-                             lambda e, frame=poster_frame, m=movie: on_movie_select(frame, m))
+        ctk.CTkButton(detail_frame, text="Close", command=detail_window.destroy, fg_color="#E50914",
+                      hover_color="#C40812").pack(pady=10)
 
-        return row_container
+    # --- SIMPLIFIED create_movie_row FUNCTION (NO MORE THREADING) ---
+    def create_movie_row(self, container, movies, category_name):
+        ctk.CTkLabel(container, text=category_name, font=("Arial", 18, "bold"), anchor="w").pack(fill="x", padx=20,
+                                                                                                 pady=(20, 10))
+        row_frame = ctk.CTkScrollableFrame(container, fg_color="black", orientation="horizontal", height=280)
+        row_frame.pack(fill="x", padx=10, pady=(0, 20))
 
+        for movie in movies:
+            card = ctk.CTkFrame(row_frame, width=150, height=250, corner_radius=8, fg_color="#222222")
+            card.pack(side="left", padx=10, pady=10)
+            card.pack_propagate(False)
 
-    def clear_content_frame():
-        for widget in content_frame.winfo_children():
+            # Load image directly here. This will be slow but stable.
+            try:
+                poster_url = self.backend.get_image_url(movie['title'])
+                if not poster_url: raise ValueError("No URL")
+                resp = requests.get(poster_url, timeout=10)
+                resp.raise_for_status()
+                pil_img = Image.open(BytesIO(resp.content)).resize((140, 200), Image.LANCZOS)
+            except Exception as e:
+                print(f"Failed to load poster for {movie['title']}: {e}")
+                pil_img = Image.new("RGB", (140, 200), color="#555555")
+
+            photo = ctk.CTkImage(light_image=pil_img, size=(140, 200))
+            self.photo_references.append(photo)  # Keep reference
+
+            img_label = ctk.CTkLabel(card, image=photo, text="")
+            img_label.image = photo  # Anchor reference
+            img_label.pack(pady=(5, 5))
+
+            title_label = ctk.CTkLabel(card, text=movie['title'], wraplength=140, font=("Arial", 12))
+            title_label.pack(expand=True, fill="x", padx=5)
+
+            # Bind click event
+            card.bind("<Button-1>", lambda e, m=movie, p=pil_img: self.show_movie_details(m, p))
+            img_label.bind("<Button-1>", lambda e, m=movie, p=pil_img: self.show_movie_details(m, p))
+
+    def populate_dashboard(self):
+        self.clear_content_frame()
+        loading_label = ctk.CTkLabel(self.content_frame, text="Loading recommendations, please wait...",
+                                     font=("Arial", 18))
+        loading_label.pack(pady=50)
+        self.update_idletasks()
+
+        user_history = self.backend.get_user_history()
+        if user_history:
+            recs = self.backend.recommend(user_history[0], 10)
+        else:
+            # Changed default movie since "The Matrix" was not found
+            recs = self.backend.recommend("Inception", 10)
+
+        action_recs = self.backend.recommend("The Dark Knight", 7)
+        comedy_recs = self.backend.recommend("Superbad", 7)
+
+        loading_label.destroy()
+
+        if recs: self.create_movie_row(self.content_frame, recs, "Recommended For You")
+        if action_recs: self.create_movie_row(self.content_frame, action_recs, "Action & Adventure")
+        if comedy_recs: self.create_movie_row(self.content_frame, comedy_recs, "Comedy")
+
+    def search_and_display(self):
+        query = self.search_entry.get().strip()
+        if not query:
+            self.populate_dashboard()
+            return
+        self.clear_content_frame()
+        results = self.backend.recommend(query, 20)
+        if results:
+            self.create_movie_row(self.content_frame, results, f"Results for '{query}'")
+        else:
+            ctk.CTkLabel(self.content_frame, text=f"No results found for '{query}'").pack(pady=50)
+
+    def clear_content_frame(self):
+        self.photo_references.clear()
+        for widget in self.content_frame.winfo_children():
             widget.destroy()
 
 
-    def show_all_movies():
-        clear_content_frame()
-        for category, movies in movie_categories.items():
-            create_movie_row(content_frame, movies, category)
-
-
-    def search_movie(event=None):
-        query = search_bar.get().strip().lower()
-        if not query:
-            show_all_movies()
-            return
-
-        clear_content_frame()
-
-        # Search for matching movies
-        found_movies = []
-        for category, movies in movie_categories.items():
-            for movie in movies:
-                if (query in movie["title"].lower() or
-                        query in movie["genre"].lower() or
-                        query in movie["description"].lower()):
-                    found_movies.append(movie)
-
-        if found_movies:
-            # Group by genre for better organization
-            movies_by_genre = {}
-            for movie in found_movies:
-                genre = movie["genre"]
-                if genre not in movies_by_genre:
-                    movies_by_genre[genre] = []
-                movies_by_genre[genre].append(movie)
-
-            # Display results by genre
-            for genre, movies in movies_by_genre.items():
-                create_movie_row(content_frame, movies, f"Results for '{query}' in {genre}")
-        else:
-            # No results found
-            no_results = ctk.CTkLabel(content_frame,
-                                      text=f"No results found for '{query}'",
-                                      text_color="white", font=("Arial", 16))
-            no_results.pack(pady=50)
-
-
-    # Bind search functionality
-    search_bar.bind("<Return>", search_movie)
-
-
-    # Mouse wheel scrolling function
-    def _on_mousewheel(event):
-        content_frame._parent_canvas.yview_scroll(int(-1 * (event.delta / 40)), "units")
-
-
-    # Bind mouse wheel to scrollable frame
-    content_frame._parent_canvas.bind_all("<MouseWheel>", _on_mousewheel)
-
-    # Initial display of all movies
-    show_all_movies()
-
-    root.mainloop()
+def show_main(backend, username):
+    app = MainWindow(backend, username)
+    app.mainloop()

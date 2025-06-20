@@ -6,8 +6,7 @@ with open("fernet.key", "wb") as key_file:
     key_file.write(fernet_key)
 
 # Your Gemini API key here (REPLACE THIS WITH YOUR ACTUAL API KEY)
-api_key = "your api key"
-
+api_key = "AIzaSyAFpjbSHT5juAaUe3Bz7gaLbOCA9h9B8ys"
 # Encrypt the API key
 fernet = Fernet(fernet_key)
 encrypted_key = fernet.encrypt(api_key.encode())

@@ -1,42 +1,45 @@
 import mysql.connector
 from database.db_config import get_connection
-import os
 
+# It's generally better to manage connections within a class or pass them as arguments,
+# but for this structure, we'll use a single global connection.
 conn = get_connection()
 cursor = conn.cursor()
 
-# Add a new user
+
 def register_user(username, password, preferred_genres):
+    """Adds a new user to the database."""
     try:
         # Check if user already exists
         cursor.execute("SELECT * FROM users WHERE username = %s", (username,))
-        result = cursor.fetchone()
-        if result:
+        if cursor.fetchone():
             return "existed"
 
-        # Join the list of genres into a string
+        # Join the list of genres into a comma-separated string
         genre_string = ",".join(preferred_genres)
 
-        # Insert new user with preferred genres
         cursor.execute(
             "INSERT INTO users (username, password, preferred_genres) VALUES (%s, %s, %s)",
             (username, password, genre_string)
         )
         conn.commit()
         return True
-
-    except mysql.connector.Error:
+    except mysql.connector.Error as err:
+        print(f"❌ Error during registration: {err}")
+        conn.rollback()  # Rollback changes on error
         return False
 
 
-
 def auth_user(username, password):
+    """Authenticates a user and returns their data if successful."""
     try:
-        cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
+        # Select specific columns instead of '*'
+        cursor.execute("SELECT user_id, username, preferred_genres FROM users WHERE username = %s AND password = %s",
+                       (username, password))
         result = cursor.fetchone()
         if result:
             print("✅ Authentication successful.")
-            return result  # Return the full row so you can access user_id, etc.
+            return result
         else:
             print("❌ Authentication failed. Invalid username or password.")
             return None
@@ -44,95 +47,96 @@ def auth_user(username, password):
         print(f"❌ Error during authentication: {err}")
         return None
 
-# Log a search query for a user
+
 def log_search(user_id, query):
+    """Logs a search query for a specific user."""
     try:
         cursor.execute("INSERT INTO search_history (user_id, search_query) VALUES (%s, %s)", (user_id, query))
         conn.commit()
         print("✅ Search logged.")
     except mysql.connector.Error as err:
         print(f"❌ Error logging search: {err}")
+        conn.rollback()
 
-# Retrieve search history for a user
+
 def get_history(user_id):
+    """Retrieves search history for a user as a list of strings."""
     try:
-        cursor.execute("SELECT search_query FROM search_history WHERE user_id = %s ORDER BY search_time DESC", (user_id,))
-        return cursor.fetchall()
+        # REMOVE the 'ORDER BY' part from this query
+        cursor.execute("SELECT search_query FROM search_history WHERE user_id = %s", (user_id,))
+        return [row[0] for row in cursor.fetchall()]
     except mysql.connector.Error as err:
         print(f"❌ Error retrieving history: {err}")
         return []
 
-# Optional: Get user_id by username (for backend use)
+
 def get_user_id(username):
-    cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
-    result = cursor.fetchone()
-    return result[0] if result else None
-
-# Close the connection safely
-def close():
-    cursor.close()
-    conn.close()
-
-# not running
-def preferred_movies(user_id):
+    """Gets a user's ID from their username."""
     try:
-        conn = get_connection()
-        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT user_id FROM users WHERE username = %s", (username,))
+        result = cursor.fetchone()
+        return result[0] if result else None
+    except mysql.connector.Error as err:
+        print(f"❌ Error getting user ID: {err}")
+        return None
 
-        # Step 1: Fetch preferred genres from users table
-        cursor.execute("SELECT preferred_genres FROM users WHERE user_id = %s", (user_id,))
-        row = cursor.fetchone()
 
-        if not row or not row["preferred_genres"]:
-            print("❌ No preferred genres found for user.")
+def get_movies_by_genre(genre, limit=20):
+    """Retrieves a list of movies for a given genre."""
+    dict_cursor = None
+    try:
+        # Using a dictionary cursor makes handling results easier
+        dict_cursor = conn.cursor(dictionary=True)
+        query = "SELECT title, genres, avg_rating FROM movies WHERE genres LIKE %s ORDER BY avg_rating DESC LIMIT %s"
+        dict_cursor.execute(query, (f"%{genre}%", limit))
+        return dict_cursor.fetchall()
+    except mysql.connector.Error as err:
+        print(f"❌ Error retrieving movies by genre: {err}")
+        return []
+    finally:
+        if dict_cursor:
+            dict_cursor.close()
+
+
+def get_preferred_movies(user_id):
+    """Gets movie recommendations based on a user's preferred genres."""
+    dict_cursor = None
+    try:
+        dict_cursor = conn.cursor(dictionary=True)
+        # Step 1: Get user's preferred genres
+        dict_cursor.execute("SELECT preferred_genres FROM users WHERE user_id = %s", (user_id,))
+        user_prefs = dict_cursor.fetchone()
+
+        if not user_prefs or not user_prefs["preferred_genres"]:
+            print("❌ No preferred genres found for this user.")
             return []
 
-        genres_list = row["preferred_genres"].split()  # space-separated genres
+        # CORRECTED: Split by comma, not space
+        genres_list = user_prefs["preferred_genres"].split(',')
         movies = []
 
-        # Step 2: For each genre, get top-rated movies
+        # Step 2: Fetch top movies for each genre
         for genre in genres_list:
-            query = """
-                SELECT title, avg_rating AS rating, genres AS genre
-                FROM movies
-                WHERE genres LIKE %s
-                ORDER BY avg_rating DESC
-                LIMIT 10
-            """
-            cursor.execute(query, (f"%{genre}%",))
-            results = cursor.fetchall()
-            movies.extend(results)
+            if not genre: continue  # Skip empty strings
+            # Reuse the get_movies_by_genre function to avoid duplicate code
+            movies.extend(get_movies_by_genre(genre.strip(), limit=5))  # Get 5 movies per genre
 
-        return movies
+        # Remove duplicate movies that might appear in multiple genres
+        unique_movies = {movie['title']: movie for movie in movies}.values()
+        return list(unique_movies)
 
-    except Exception as e:
-        print(f"❌ Database error: {e}")
-        return []
-
-    finally:
-        if conn.is_connected():
-            cursor.close()
-            conn.close()
-
-def get_movies_by_genre(genre: str) -> list[dict[str, str]]:
-    data = (f'%{genre}%',)
-    result = []
-    try:
-        cursor.execute("SELECT movieid, title, genres, avg_rating FROM movies WHERE genres LIKE %s", data)
-        rows = cursor.fetchall()
-        for row in rows:
-            movie_dict = {
-                "movieId": str(row[0]),
-                "title": row[1],
-                "genres": row[2],
-                "rating": str(row[3]),
-                "description": "",
-                'image': "placeholder.jpg" # Image path
-            }
-            result.append(movie_dict)
     except mysql.connector.Error as err:
-        print(f"❌ Error retrieving history: {err}")
-    return result
+        print(f"❌ Database error in get_preferred_movies: {err}")
+        return []
+    finally:
+        if dict_cursor:
+            dict_cursor.close()
 
-reult = preferred_movies(7)
-print(reult)
+
+def close():
+    """Safely closes the database connection and cursor."""
+    if cursor:
+        cursor.close()
+    if conn and conn.is_connected():
+        conn.close()
+        print("Database connection closed.")
